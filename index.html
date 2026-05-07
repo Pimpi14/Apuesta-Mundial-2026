@@ -123,6 +123,15 @@
             border-radius: 8px;
             margin: 12px 0;
         }
+        .file-input {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            width: 100%;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
         
         @media(max-width:600px){
             .partido{flex-direction:column;align-items:flex-start;gap:8px}
@@ -177,12 +186,8 @@
         <div id="puntajeVivo" class="puntaje-vivo" style="display:none">
             🏆 <strong>TUS PUNTOS ACTUALES:</strong> <span id="puntosEnVivo">0</span> pts
         </div>
-        <div id="lockedBanner" class="card" style="background:#e8454520;border-color:var(--red);display:none">
-            🔒 <strong>APUESTAS CERRADAS</strong> - No puedes modificar nada.
-        </div>
-        
         <div class="card">
-            <div class="card-title">🏆 Elige tu campeón y finalistas</div>
+            <div class="card-title">⭐ APUESTAS ESPECIALES</div>
             <div id="apuestasContent"></div>
             <button class="btn" onclick="exportarApuestas()">📤 EXPORTAR MIS APUESTAS</button>
             <button class="btn btn-danger" onclick="cerrarLocalmente()" style="margin-top:8px">🔒 CERRAR LOCALMENTE</button>
@@ -212,7 +217,9 @@
         <div class="card">
             <div class="card-title">⭐ ESPECIALES REALES</div>
             <div class="flex-row">
-                <input id="realCampeonVivo" class="admin-input" placeholder="Campeón real" style="flex:1">
+                <select id="realCampeonVivo" class="admin-input" style="flex:1">
+                    <option value="">-- Campeón real --</option>
+                </select>
                 <input id="realGoleadorVivo" class="admin-input" placeholder="Goleador real" style="flex:1">
                 <input id="realPorteroVivo" class="admin-input" placeholder="Portero real" style="flex:1">
             </div>
@@ -265,7 +272,7 @@
     <div id="panel-admin" class="panel">
         <div class="card">
             <div class="card-title">📦 IMPORTAR APUESTAS DE JUGADORES</div>
-            <input type="file" id="importarArchivo" accept=".json" class="file-input" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;width:100%;color:var(--text);margin-bottom:12px">
+            <input type="file" id="importarArchivo" accept=".json" class="file-input">
             <button class="btn" onclick="importarApuestasAdmin()">📂 Importar archivo de jugador</button>
         </div>
         
@@ -280,11 +287,24 @@
         </div>
         
         <div class="card">
-            <div class="card-title">🎯 RESULTADOS REALES (Fase de Grupos)</div>
-            <div style="max-height:400px; overflow-y:auto">
+            <div class="card-title">🎯 RESULTADOS REALES - FASE DE GRUPOS</div>
+            <p><small>Introduce los resultados reales de cada partido.</small></p>
+            <div style="max-height:450px; overflow-y:auto; padding-right:5px">
                 <div id="resultadosAdminContent"></div>
             </div>
             <button class="btn btn-secondary" onclick="guardarResultadosAdmin()" style="margin-top:12px">💾 Guardar resultados</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">⭐ ESPECIALES REALES</div>
+            <div class="flex-row">
+                <select id="realCampeonAdmin" class="admin-input" style="flex:1">
+                    <option value="">-- Campeón real --</option>
+                </select>
+                <input id="realGoleadorAdmin" class="admin-input" placeholder="Máximo goleador real" style="flex:1">
+                <input id="realPorteroAdmin" class="admin-input" placeholder="Portero menos goleado real" style="flex:1">
+            </div>
+            <button class="btn btn-secondary" onclick="guardarEspecialesAdmin()" style="margin-top:12px">💾 Guardar especiales reales</button>
         </div>
     </div>
 
@@ -387,7 +407,7 @@ let resultadosReales = {
 let jugadorActual = null;
 
 function cargarDatos() {
-    const datos = localStorage.getItem("quiniela_mundial_v3");
+    const datos = localStorage.getItem("quiniela_mundial_v4");
     if(datos){
         try{
             const data = JSON.parse(datos);
@@ -400,7 +420,7 @@ function cargarDatos() {
 }
 
 function guardarDatos() {
-    localStorage.setItem("quiniela_mundial_v3", JSON.stringify({ jugadores, apuestas, resultadosReales }));
+    localStorage.setItem("quiniela_mundial_v4", JSON.stringify({ jugadores, apuestas, resultadosReales }));
 }
 
 // ============================================================
@@ -468,7 +488,7 @@ function cambiarJugador(id) {
 }
 
 // ============================================================
-// APUESTAS - ESPECIALES (Campeón, Goleador, Portero)
+// APUESTAS - ESPECIALES
 // ============================================================
 function setEspecial(campo, valor) {
     if(!jugadorActual) return;
@@ -489,13 +509,15 @@ function renderApuestas() {
         return;
     }
     
+    const selectOptions = TODOS_EQUIPOS.map(eq => `<option ${esp.campeon === eq ? 'selected' : ''} value="${eq}">${eq}</option>`).join('');
+    
     cont.innerHTML = `
         <div class="grid-2">
             <div class="card">
                 <div class="card-title">🏆 Campeón (15 pts)</div>
                 <select class="admin-input" id="apuestaCampeon" ${cerrado ? 'disabled' : ''}>
                     <option value="">Seleccionar campeón</option>
-                    ${TODOS_EQUIPOS.map(eq => `<option ${esp.campeon === eq ? 'selected' : ''} value="${eq}">${eq}</option>`).join('')}
+                    ${selectOptions}
                 </select>
             </div>
             <div class="card">
@@ -524,7 +546,6 @@ function calcularPuntosJugador(pid) {
     const bets = apuestas[pid];
     if(!bets) return 0;
     
-    // Especiales
     const esp = bets.especiales || {};
     if(esp.campeon && esp.campeon === resultadosReales.campeon) pts += 15;
     if(esp.goleador && esp.goleador === resultadosReales.goleador) pts += 10;
@@ -597,6 +618,14 @@ function renderResultadosVivo() {
             renderRanking();
         };
     });
+    
+    // Llenar select de campeón en vivo
+    const selectVivo = document.getElementById("realCampeonVivo");
+    if(selectVivo) {
+        selectVivo.innerHTML = '<option value="">-- Campeón real --</option>' + TODOS_EQUIPOS.map(eq => `<option ${resultadosReales.campeon === eq ? 'selected' : ''} value="${eq}">${eq}</option>`).join('');
+    }
+    document.getElementById("realGoleadorVivo").value = resultadosReales.goleador;
+    document.getElementById("realPorteroVivo").value = resultadosReales.portero;
 }
 
 function renderClasificacionAutomatica() {
@@ -639,26 +668,37 @@ function guardarEspecialesRealesVivo() {
     guardarDatos();
     mostrarPuntajeEnVivo();
     renderRanking();
+    // Sincronizar con admin
+    const adminCampeon = document.getElementById("realCampeonAdmin");
+    const adminGoleador = document.getElementById("realGoleadorAdmin");
+    const adminPortero = document.getElementById("realPorteroAdmin");
+    if(adminCampeon) adminCampeon.value = resultadosReales.campeon;
+    if(adminGoleador) adminGoleador.value = resultadosReales.goleador;
+    if(adminPortero) adminPortero.value = resultadosReales.portero;
     toast("✅ Especiales guardados");
 }
 
 // ============================================================
-// ADMIN - RESULTADOS
+// ADMIN - RESULTADOS REALES
 // ============================================================
 function renderResultadosAdmin() {
     let html = '<div class="grid-2" style="max-height:400px;overflow:auto">';
-    PARTIDOS.slice(0, 72).forEach(p => {
-        const real = resultadosReales.partidos[p.id] || "";
-        html += `<div class="card" style="padding:8px">
-            <small>${p.local} vs ${p.visitante}</small>
-            <select class="admin-resultado" data-id="${p.id}" style="width:100%;margin-top:4px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px;color:white">
-                <option value="">---</option>
-                <option ${real==='1'?'selected':''} value="1">1 - Gana ${p.local}</option>
-                <option ${real==='x'?'selected':''} value="x">X - Empate</option>
-                <option ${real==='2'?'selected':''} value="2">2 - Gana ${p.visitante}</option>
-            </select>
-        </div>`;
-    });
+    for(const [g, eqs] of Object.entries(GRUPOS)){
+        html += `<div class="grupo-titulo" style="font-size:14px; margin-top:8px">Grupo ${g}</div>`;
+        const partidosGrupo = PARTIDOS.filter(p => p.grupo === g);
+        partidosGrupo.forEach(p => {
+            const real = resultadosReales.partidos[p.id] || "";
+            html += `<div class="card" style="padding:8px; margin-bottom:6px">
+                <div style="font-size:12px; margin-bottom:4px">${p.local} vs ${p.visitante}</div>
+                <select class="admin-resultado" data-id="${p.id}" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px;color:white">
+                    <option value="">--- Sin resultado ---</option>
+                    <option ${real==='1'?'selected':''} value="1">1 - Gana ${p.local}</option>
+                    <option ${real==='x'?'selected':''} value="x">X - Empate</option>
+                    <option ${real==='2'?'selected':''} value="2">2 - Gana ${p.visitante}</option>
+                </select>
+            </div>`;
+        });
+    }
     html += `</div>`;
     document.getElementById("resultadosAdminContent").innerHTML = html;
     
@@ -666,15 +706,42 @@ function renderResultadosAdmin() {
         sel.onchange = () => {
             resultadosReales.partidos[parseInt(sel.dataset.id)] = sel.value;
             guardarDatos();
-            mostrarPuntajeEnVivo();
+            renderClasificacionAutomatica();
+            renderMejoresTercerosAuto();
             renderRanking();
+            mostrarPuntajeEnVivo();
+            toast("✅ Resultado guardado");
         };
     });
 }
 
 function guardarResultadosAdmin() {
     guardarDatos();
-    toast("✅ Resultados guardados");
+    toast("✅ Todos los resultados han sido guardados");
+}
+
+function guardarEspecialesAdmin() {
+    const campeon = document.getElementById("realCampeonAdmin")?.value || "";
+    const goleador = document.getElementById("realGoleadorAdmin")?.value || "";
+    const portero = document.getElementById("realPorteroAdmin")?.value || "";
+    
+    resultadosReales.campeon = campeon;
+    resultadosReales.goleador = goleador;
+    resultadosReales.portero = portero;
+    
+    guardarDatos();
+    renderRanking();
+    mostrarPuntajeEnVivo();
+    
+    // Sincronizar con vivo
+    const vivoCampeon = document.getElementById("realCampeonVivo");
+    const vivoGoleador = document.getElementById("realGoleadorVivo");
+    const vivoPortero = document.getElementById("realPorteroVivo");
+    if(vivoCampeon) vivoCampeon.value = resultadosReales.campeon;
+    if(vivoGoleador) vivoGoleador.value = resultadosReales.goleador;
+    if(vivoPortero) vivoPortero.value = resultadosReales.portero;
+    
+    toast("✅ Especiales reales guardados");
 }
 
 // ============================================================
@@ -871,6 +938,18 @@ function renderSelectorApuestas() {
     `).join('');
 }
 
+// Inicializar selects de admin
+function inicializarSelectsAdmin() {
+    const selectAdmin = document.getElementById("realCampeonAdmin");
+    if(selectAdmin) {
+        selectAdmin.innerHTML = '<option value="">-- Campeón real --</option>' + TODOS_EQUIPOS.map(eq => `<option ${resultadosReales.campeon === eq ? 'selected' : ''} value="${eq}">${eq}</option>`).join('');
+    }
+    const goleadorAdmin = document.getElementById("realGoleadorAdmin");
+    const porteroAdmin = document.getElementById("realPorteroAdmin");
+    if(goleadorAdmin) goleadorAdmin.value = resultadosReales.goleador;
+    if(porteroAdmin) porteroAdmin.value = resultadosReales.portero;
+}
+
 function renderizarTodo() {
     renderJugadores();
     renderSelectorApuestas();
@@ -880,6 +959,7 @@ function renderizarTodo() {
     renderClasificacionAutomatica();
     renderMejoresTercerosAuto();
     renderResultadosAdmin();
+    inicializarSelectsAdmin();
     renderRanking();
     mostrarPuntajeEnVivo();
 }
@@ -892,6 +972,11 @@ function mostrarPanel(panel, btn) {
     if(panel === 'resultados') {
         renderClasificacionAutomatica();
         renderMejoresTercerosAuto();
+        renderResultadosVivo();
+    }
+    if(panel === 'admin') {
+        renderResultadosAdmin();
+        inicializarSelectsAdmin();
     }
     if(panel === 'ranking') renderRanking();
 }
