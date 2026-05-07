@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>⚽ Quiniela Mundial 2026 - Completa</title>
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
@@ -41,27 +41,20 @@
         .apuesta-btn.selected-x{background:rgba(139,155,180,0.2);border-color:#8b9bb4;color:#c0cce0}
         .apuesta-btn.selected-2{background:rgba(232,69,69,0.2);border-color:var(--red);color:#ff8080}
         .apuesta-btn:disabled{opacity:0.5;cursor:not-allowed}
-        .resultado-real{background:rgba(59,130,246,0.15);border:1px solid var(--blue);padding:4px 8px;border-radius:12px;font-size:11px;color:var(--blue);min-width:60px;text-align:center}
         .grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-        .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+        .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
         .chk-label{display:block;padding:6px 0;cursor:pointer;color:var(--text2)}
         .admin-input{width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text)}
         .ranking-table{width:100%;border-collapse:collapse}
         .ranking-table th,.ranking-table td{padding:10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text)}
         .pts-badge{background:rgba(0,212,170,0.2);padding:4px 10px;border-radius:20px;color:var(--accent);font-weight:700}
-        .badge{font-size:11px;padding:2px 8px;border-radius:12px}
-        .badge-lock{background:rgba(247,201,72,0.2);color:var(--accent2)}
-        .badge-import{background:rgba(29,185,122,0.2);color:var(--green)}
-        small{color:var(--text2);font-size:11px}
-        .file-input{background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:12px;width:100%;margin-top:10px;color:var(--text)}
-        .flex-row{display:flex;gap:12px;flex-wrap:wrap}
-        .puntaje-vivo{background:rgba(0,212,170,0.1);border-radius:12px;padding:8px 16px;text-align:center;margin-bottom:16px;color:var(--text)}
+        .puntaje-vivo{background:rgba(0,212,170,0.1);border-radius:12px;padding:8px 16px;text-align:center;margin-bottom:16px}
         .puntaje-vivo span{font-size:28px;font-weight:700;color:var(--accent)}
-        .clasif-grupo{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border)}
-        .clasif-pos{font-weight:700;color:var(--accent2);width:60px}
-        .clasif-equipos{flex:1;color:var(--text)}
+        .flex-row{display:flex;gap:12px;flex-wrap:wrap}
+        .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--accent);border-radius:30px;padding:10px 20px;font-size:14px;z-index:1000;transition:transform 0.3s;pointer-events:none}
+        .toast.show{transform:translateX(-50%) translateY(0)}
         
-        /* Estilos para selectores */
+        /* Estilos para selectores de resultados */
         .resultado-select {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -78,11 +71,6 @@
             color: var(--text);
             padding: 8px;
         }
-        .resultado-select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
         .partido-item {
             margin: 10px 0;
             padding: 10px;
@@ -95,8 +83,18 @@
             margin-bottom: 6px;
             color: var(--text);
         }
-        
-        /* Estilos para la tabla de puntuación */
+        .clasif-grupo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .clasif-pos {
+            font-weight: 700;
+            color: var(--accent2);
+            width: 60px;
+        }
         .puntuacion-tabla {
             width: 100%;
             border-collapse: collapse;
@@ -112,9 +110,6 @@
             padding: 10px 12px;
             border-bottom: 1px solid var(--border);
             color: var(--text);
-        }
-        .puntuacion-tabla tr:hover td {
-            background: rgba(255,255,255,0.02);
         }
         .punto-destacado {
             color: var(--accent);
@@ -168,11 +163,10 @@
             <div class="card-title">📋 Instrucciones para JUGADORES</div>
             <small>
                 <strong>PASO 1:</strong> Añade tu nombre arriba<br>
-                <strong>PASO 2:</strong> Ve a la pestaña "Mis Apuestas" y selecciona tu nombre<br>
-                <strong>PASO 3:</strong> Rellena todos tus pronósticos<br>
-                <strong>PASO 4:</strong> Cuando termines, pulsa "📤 EXPORTAR MIS APUESTAS" y envíale el archivo al administrador<br>
-                <strong>PASO 5:</strong> Durante el mundial, ve a "Resultados en vivo" y marca los resultados reales para ver tus puntos<br><br>
-                📌 <strong>Consulta el "Sistema de Puntuación" para saber cómo se ganan los puntos</strong>
+                <strong>PASO 2:</strong> Ve a "Mis Apuestas" y selecciona tu nombre<br>
+                <strong>PASO 3:</strong> Rellena tus pronósticos<br>
+                <strong>PASO 4:</strong> Exporta tus apuestas y envíalas al administrador<br>
+                <strong>PASO 5:</strong> El administrador importará tus datos
             </small>
         </div>
     </div>
@@ -188,29 +182,10 @@
         </div>
         
         <div class="card">
-            <div class="card-title">🗓 FASE DE GRUPOS - 1X2 (3 pts por acierto)</div>
-            <div id="gruposContent"></div>
-            <div id="progresoGrupos"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">📋 CLASIFICACIÓN DE GRUPOS (2 pts por equipo acertado)</div>
-            <div id="clasifContent"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">🔄 MEJORES TERCEROS (elige 8 - 2 pts por acierto)</div>
-            <div id="tercerosContent"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">⭐ APUESTAS ESPECIALES</div>
-            <div id="especialesContent"></div>
-        </div>
-
-        <div class="flex-row" style="gap:12px; margin-top:20px">
+            <div class="card-title">🏆 Elige tu campeón y finalistas</div>
+            <div id="apuestasContent"></div>
             <button class="btn" onclick="exportarApuestas()">📤 EXPORTAR MIS APUESTAS</button>
-            <button class="btn btn-danger" onclick="cerrarLocalmente()">🔒 CERRAR LOCALMENTE</button>
+            <button class="btn btn-danger" onclick="cerrarLocalmente()" style="margin-top:8px">🔒 CERRAR LOCALMENTE</button>
         </div>
     </div>
 
@@ -219,7 +194,7 @@
         <div class="card">
             <div class="card-title">🎯 RESULTADOS REALES DEL MUNDIAL</div>
             <p><small>Introduce los resultados de cada partido. La clasificación de grupos y los mejores terceros se calculan automáticamente.</small></p>
-            <div style="max-height:550px; overflow-y:auto; padding-right:8px">
+            <div style="max-height:500px; overflow-y:auto; padding-right:8px">
                 <div id="resultadosVivoContent"></div>
             </div>
         </div>
@@ -245,7 +220,7 @@
         </div>
     </div>
 
-    <!-- PANEL SISTEMA DE PUNTUACIÓN (NUEVO) -->
+    <!-- PANEL SISTEMA DE PUNTUACIÓN -->
     <div id="panel-puntuacion" class="panel">
         <div class="card">
             <div class="card-title">📋 SISTEMA DE PUNTUACIÓN</div>
@@ -253,43 +228,15 @@
             
             <table class="puntuacion-tabla" style="margin-top: 20px;">
                 <thead>
-                    <tr>
-                        <th>Categoría</th>
-                        <th>Detalle</th>
-                        <th>Puntos</th>
-                    </tr>
+                    <tr><th>Categoría</th><th>Detalle</th><th>Puntos</th></tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><strong>🏆 Fase de Grupos</strong></td>
-                        <td>Acertar el resultado exacto (1, X o 2) de cualquier partido de grupos</td>
-                        <td><span class="punto-destacado">3 pts</span> por acierto</td>
-                    </tr>
-                    <tr>
-                        <td><strong>📋 Clasificación de Grupos</strong></td>
-                        <td>Acertar qué equipos quedan 1º y 2º de cada grupo (12 grupos)</td>
-                        <td><span class="punto-destacado">2 pts</span> por equipo acertado</td>
-                    </tr>
-                    <tr>
-                        <td><strong>🔄 Mejores Terceros</strong></td>
-                        <td>Acertar cuáles de los 12 equipos que quedan 3º pasan a octavos (pasan los 8 mejores)</td>
-                        <td><span class="punto-destacado">2 pts</span> por tercero acertado</td>
-                    </tr>
-                    <tr style="background: rgba(0,212,170,0.05);">
-                        <td><strong>🏆 Campeón</strong></td>
-                        <td>Acertar qué selección gana el Mundial</td>
-                        <td><span class="punto-destacado">15 pts</span></td>
-                    </tr>
-                    <tr style="background: rgba(0,212,170,0.05);">
-                        <td><strong>⚽ Máximo Goleador</strong></td>
-                        <td>Acertar qué jugador marca más goles en todo el torneo</td>
-                        <td><span class="punto-destacado">10 pts</span></td>
-                    </tr>
-                    <tr style="background: rgba(0,212,170,0.05);">
-                        <td><strong>🧤 Portero Menos Goleado</strong></td>
-                        <td>Acertar qué portero recibe menos goles (mínimo 3 partidos)</td>
-                        <td><span class="punto-destacado">10 pts</span></td>
-                    </tr>
+                    <tr><td><strong>🏆 Fase de Grupos</strong></td><td>Acertar el resultado exacto (1, X o 2) de cualquier partido de grupos</td><td><span class="punto-destacado">3 pts</span> por acierto</td></tr>
+                    <tr><td><strong>📋 Clasificación de Grupos</strong></td><td>Acertar qué equipos quedan 1º y 2º de cada grupo (12 grupos)</td><td><span class="punto-destacado">2 pts</span> por equipo acertado</td></tr>
+                    <tr><td><strong>🔄 Mejores Terceros</strong></td><td>Acertar cuáles de los 12 equipos que quedan 3º pasan a octavos (pasan los 8 mejores)</td><td><span class="punto-destacado">2 pts</span> por tercero acertado</td></tr>
+                    <tr style="background:rgba(0,212,170,0.05);"><td><strong>🏆 Campeón</strong></td><td>Acertar qué selección gana el Mundial</td><td><span class="punto-destacado">15 pts</span></td></tr>
+                    <tr style="background:rgba(0,212,170,0.05);"><td><strong>⚽ Máximo Goleador</strong></td><td>Acertar qué jugador marca más goles en todo el torneo</td><td><span class="punto-destacado">10 pts</span></td></tr>
+                    <tr style="background:rgba(0,212,170,0.05);"><td><strong>🧤 Portero Menos Goleado</strong></td><td>Acertar qué portero recibe menos goles (mínimo 3 partidos)</td><td><span class="punto-destacado">10 pts</span></td></tr>
                 </tbody>
             </table>
 
@@ -318,15 +265,26 @@
     <div id="panel-admin" class="panel">
         <div class="card">
             <div class="card-title">📦 IMPORTAR APUESTAS DE JUGADORES</div>
-            <input type="file" id="importarArchivo" accept=".json" class="file-input">
-            <button class="btn" onclick="importarApuestas()">📂 Importar archivo</button>
+            <input type="file" id="importarArchivo" accept=".json" class="file-input" style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;width:100%;color:var(--text);margin-bottom:12px">
+            <button class="btn" onclick="importarApuestasAdmin()">📂 Importar archivo de jugador</button>
         </div>
         
         <div class="card">
             <div class="card-title">📋 JUGADORES REGISTRADOS</div>
             <div id="listaJugadoresAdmin"></div>
-            <button class="btn btn-danger" onclick="exportarTodosLosDatos()" style="background:var(--accent2);color:#000">💾 Backup completo</button>
-            <button class="btn btn-blue" onclick="generarPDF()" style="margin-top:8px">📄 Generar PDF del Ranking</button>
+            <div class="flex-row" style="margin-top:16px">
+                <button class="btn" onclick="exportarTodosLosDatos()" style="background:var(--accent2);color:#000">💾 Backup completo</button>
+                <button class="btn btn-secondary" onclick="restaurarBackup()">📥 Restaurar backup</button>
+            </div>
+            <button class="btn btn-blue" onclick="generarPDFRanking()" style="margin-top:8px">📄 Generar PDF del Ranking</button>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">🎯 RESULTADOS REALES (Fase de Grupos)</div>
+            <div style="max-height:400px; overflow-y:auto">
+                <div id="resultadosAdminContent"></div>
+            </div>
+            <button class="btn btn-secondary" onclick="guardarResultadosAdmin()" style="margin-top:12px">💾 Guardar resultados</button>
         </div>
     </div>
 
@@ -334,11 +292,13 @@
     <div id="panel-ranking" class="panel">
         <div class="card">
             <div class="card-title">🏆 CLASIFICACIÓN GENERAL</div>
-            <button class="btn-small" onclick="generarPDF()" style="background:var(--blue);margin-bottom:16px">📄 Exportar a PDF</button>
+            <button class="btn-small" onclick="generarPDFRanking()" style="background:var(--blue);margin-bottom:16px">📄 Exportar a PDF</button>
             <div id="rankingTabla"></div>
         </div>
     </div>
 </div>
+
+<div id="toast" class="toast"></div>
 
 <script>
 // ============================================================
@@ -360,7 +320,7 @@ const GRUPOS = {
 };
 const TODOS_EQUIPOS = [...new Set(Object.values(GRUPOS).flat())].sort();
 
-// Generar todos los partidos de grupos (72 partidos)
+// Generar partidos de grupos
 let PARTIDOS = [];
 let idPartido = 0;
 for(const [g, eqs] of Object.entries(GRUPOS)){
@@ -374,7 +334,7 @@ for(const [g, eqs] of Object.entries(GRUPOS)){
 // ============================================================
 // FUNCIONES DE CÁLCULO AUTOMÁTICO
 // ============================================================
-function calcularClasificacionGrupos(){
+function calcularClasificacionGrupos() {
     let puntosPorGrupo = {};
     for(const g of Object.keys(GRUPOS)){
         puntosPorGrupo[g] = {};
@@ -402,11 +362,11 @@ function calcularClasificacionGrupos(){
     return clasificacion;
 }
 
-function calcularMejoresTerceros(){
+function calcularMejoresTerceros() {
     const clasificacion = calcularClasificacionGrupos();
     let terceros = [];
     for(const g of Object.keys(GRUPOS)){
-        if(clasificacion[g].length >= 3 && clasificacion[g][2]){
+        if(clasificacion[g].length >= 3){
             terceros.push(clasificacion[g][2]);
         }
     }
@@ -427,7 +387,7 @@ let resultadosReales = {
 let jugadorActual = null;
 
 function cargarDatos() {
-    const datos = localStorage.getItem("quiniela_mundial_completa");
+    const datos = localStorage.getItem("quiniela_mundial_v3");
     if(datos){
         try{
             const data = JSON.parse(datos);
@@ -440,44 +400,19 @@ function cargarDatos() {
 }
 
 function guardarDatos() {
-    localStorage.setItem("quiniela_mundial_completa", JSON.stringify({ jugadores, apuestas, resultadosReales }));
+    localStorage.setItem("quiniela_mundial_v3", JSON.stringify({ jugadores, apuestas, resultadosReales }));
 }
 
-function calcularPuntosJugador(pid){
-    let pts = 0;
-    const bets = apuestas[pid];
-    if(!bets) return 0;
-    
-    for(const [partidoId, prono] of Object.entries(bets.grupos || {})){
-        const real = resultadosReales.partidos[parseInt(partidoId)];
-        if(real && prono === real) pts += 3;
-    }
-    
-    const clasificacionReal = calcularClasificacionGrupos();
-    for(const [g, eqs] of Object.entries(bets.clasif || {})){
-        const reales = clasificacionReal[g] ? [clasificacionReal[g][0], clasificacionReal[g][1]] : [];
-        eqs.forEach(eq => { if(reales.includes(eq)) pts += 2; });
-    }
-    
-    const tercerosReales = calcularMejoresTerceros();
-    (bets.terceros || []).forEach(eq => {
-        if(tercerosReales.includes(eq)) pts += 2;
-    });
-    
-    const esp = bets.especiales || {};
-    if(esp.campeon && esp.campeon === resultadosReales.campeon) pts += 15;
-    if(esp.goleador && esp.goleador === resultadosReales.goleador) pts += 10;
-    if(esp.portero && esp.portero === resultadosReales.portero) pts += 10;
-    
-    return pts;
-}
-
-function mostrarPuntajeEnVivo(){
-    if(jugadorActual){
-        const pts = calcularPuntosJugador(jugadorActual);
-        document.getElementById("puntosEnVivo").innerText = pts;
-        document.getElementById("puntajeVivo").style.display = "block";
-    }
+// ============================================================
+// TOAST NOTIFICACIONES
+// ============================================================
+let toastTimeout;
+function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
 // ============================================================
@@ -487,187 +422,148 @@ function agregarJugador() {
     const input = document.getElementById("nuevoJugadorInput");
     const nombre = input.value.trim();
     if(!nombre) return;
-    if(jugadores.find(j=>j.nombre.toLowerCase()===nombre.toLowerCase())){
-        alert("Ya existe");
+    if(jugadores.find(j=>j.nombre.toLowerCase()===nombre.toLowerCase())) {
+        toast("⚠️ Ya existe ese jugador");
         return;
     }
     const id = "j_" + Date.now();
-    jugadores.push({id, nombre});
+    jugadores.push({ id, nombre });
     apuestas[id] = {
-        grupos: {},
-        clasif: {},
-        terceros: [],
-        especiales: {},
+        especiales: { campeon: "", goleador: "", portero: "" },
         cerradoLocal: false,
         importadoAdmin: false
     };
     input.value = "";
     guardarDatos();
     renderizarTodo();
+    toast(`✅ ${nombre} añadido`);
 }
 
-function eliminarJugador(id){
-    if(confirm("¿Eliminar?")){
+function eliminarJugador(id) {
+    if(confirm("¿Eliminar este jugador?")) {
+        const nombre = jugadores.find(j=>j.id===id)?.nombre;
         jugadores = jugadores.filter(j=>j.id !== id);
         delete apuestas[id];
         if(jugadorActual === id) jugadorActual = jugadores[0]?.id || null;
         guardarDatos();
         renderizarTodo();
+        toast(`🗑 ${nombre} eliminado`);
     }
 }
 
-function cerrarLocalmente(){
+function cerrarLocalmente() {
     if(!jugadorActual) return;
     if(confirm("¿Cerrar tus apuestas? No podrás modificarlas más.")){
         apuestas[jugadorActual].cerradoLocal = true;
         guardarDatos();
         renderizarTodo();
+        toast("🔒 Apuestas cerradas localmente");
     }
 }
 
-function cambiarJugador(id){
+function cambiarJugador(id) {
     jugadorActual = id;
     renderizarTodo();
     mostrarPuntajeEnVivo();
 }
 
 // ============================================================
-// APUESTAS - GRUPOS 1X2
+// APUESTAS - ESPECIALES (Campeón, Goleador, Portero)
 // ============================================================
-function setPronosticoGrupo(partidoId, valor){
-    if(!jugadorActual) return;
-    if(apuestas[jugadorActual].cerradoLocal || apuestas[jugadorActual].importadoAdmin) return;
-    apuestas[jugadorActual].grupos[partidoId] = valor;
-    guardarDatos();
-    renderGrupos();
-    mostrarPuntajeEnVivo();
-}
-
-function renderGrupos(){
-    const cont = document.getElementById("gruposContent");
-    const cerrado = apuestas[jugadorActual]?.cerradoLocal || apuestas[jugadorActual]?.importadoAdmin;
-    let html = "";
-    let total = 0, rellenos = 0;
-    for(const [g, eqs] of Object.entries(GRUPOS)){
-        html += `<div class="grupo-titulo">Grupo ${g}</div>`;
-        const partidosGrupo = PARTIDOS.filter(p => p.grupo === g);
-        partidosGrupo.forEach(p => {
-            total++;
-            const prono = apuestas[jugadorActual]?.grupos[p.id] || "";
-            if(prono) rellenos++;
-            const real = resultadosReales.partidos[p.id];
-            html += `<div class="partido">
-                <div class="equipos">${p.local} vs ${p.visitante}</div>
-                <div class="botones">
-                    <button class="apuesta-btn ${prono==='1'?'selected-1':''}" onclick="setPronosticoGrupo(${p.id},'1')" ${cerrado?'disabled':''}>1</button>
-                    <button class="apuesta-btn ${prono==='x'?'selected-x':''}" onclick="setPronosticoGrupo(${p.id},'x')" ${cerrado?'disabled':''}>X</button>
-                    <button class="apuesta-btn ${prono==='2'?'selected-2':''}" onclick="setPronosticoGrupo(${p.id},'2')" ${cerrado?'disabled':''}>2</button>
-                </div>
-                ${real ? `<div class="resultado-real">Real: ${real}</div>` : ''}
-            </div>`;
-        });
-    }
-    cont.innerHTML = html;
-    const pct = total ? Math.round(rellenos/total*100) : 0;
-    document.getElementById("progresoGrupos").innerHTML = `<small>${rellenos}/${total} (${pct}%)</small><div style="background:#2a3650;height:4px;border-radius:2px;margin-top:4px"><div style="background:var(--accent);width:${pct}%;height:4px;border-radius:2px"></div></div>`;
-}
-
-// ============================================================
-// CLASIFICACIÓN GRUPOS (apuestas jugador)
-// ============================================================
-function setClasificacion(grupo, equipo, isChecked){
-    if(!jugadorActual) return;
-    if(apuestas[jugadorActual].cerradoLocal || apuestas[jugadorActual].importadoAdmin) return;
-    let arr = apuestas[jugadorActual].clasif[grupo] || [];
-    if(isChecked){
-        if(arr.length < 2 && !arr.includes(equipo)) arr.push(equipo);
-    }else{
-        arr = arr.filter(e => e !== equipo);
-    }
-    apuestas[jugadorActual].clasif[grupo] = arr;
-    guardarDatos();
-    renderClasificacion();
-    mostrarPuntajeEnVivo();
-}
-
-function renderClasificacion(){
-    const cont = document.getElementById("clasifContent");
-    const cerrado = apuestas[jugadorActual]?.cerradoLocal || apuestas[jugadorActual]?.importadoAdmin;
-    let html = '<div class="grid-2">';
-    for(const [g, eqs] of Object.entries(GRUPOS)){
-        const seleccionados = apuestas[jugadorActual]?.clasif[g] || [];
-        html += `<div class="card" style="padding:12px"><strong>Grupo ${g}</strong> (${seleccionados.length}/2)`;
-        eqs.forEach(eq => {
-            const checked = seleccionados.includes(eq);
-            const disabled = cerrado || (!checked && seleccionados.length>=2);
-            html += `<label class="chk-label" style="display:block;opacity:${disabled?0.5:1}">
-                <input type="checkbox" ${checked?'checked':''} ${disabled?'disabled':''} onchange="setClasificacion('${g}','${eq.replace(/'/g,"\\'")}',this.checked)"> ${eq}
-            </label>`;
-        });
-        html += `</div>`;
-    }
-    html += `</div>`;
-    cont.innerHTML = html;
-}
-
-// ============================================================
-// TERCEROS (apuestas jugador)
-// ============================================================
-function setTercero(equipo, isChecked){
-    if(!jugadorActual) return;
-    if(apuestas[jugadorActual].cerradoLocal || apuestas[jugadorActual].importadoAdmin) return;
-    let arr = apuestas[jugadorActual].terceros || [];
-    if(isChecked){
-        if(arr.length < 8 && !arr.includes(equipo)) arr.push(equipo);
-    }else{
-        arr = arr.filter(e => e !== equipo);
-    }
-    apuestas[jugadorActual].terceros = arr;
-    guardarDatos();
-    renderTerceros();
-    mostrarPuntajeEnVivo();
-}
-
-function renderTerceros(){
-    const cont = document.getElementById("tercerosContent");
-    const cerrado = apuestas[jugadorActual]?.cerradoLocal || apuestas[jugadorActual]?.importadoAdmin;
-    const seleccionados = apuestas[jugadorActual]?.terceros || [];
-    let html = `<div><strong>${seleccionados.length}/8 equipos</strong></div><div class="grid-3">`;
-    TODOS_EQUIPOS.forEach(eq => {
-        const checked = seleccionados.includes(eq);
-        const disabled = cerrado || (!checked && seleccionados.length>=8);
-        html += `<label class="chk-label" style="opacity:${disabled?0.5:1}"><input type="checkbox" ${checked?'checked':''} ${disabled?'disabled':''} onchange="setTercero('${eq.replace(/'/g,"\\'")}',this.checked)"> ${eq}</label>`;
-    });
-    html += `</div>`;
-    cont.innerHTML = html;
-}
-
-// ============================================================
-// ESPECIALES (apuestas jugador)
-// ============================================================
-function setEspecial(campo, valor){
+function setEspecial(campo, valor) {
     if(!jugadorActual) return;
     if(apuestas[jugadorActual].cerradoLocal || apuestas[jugadorActual].importadoAdmin) return;
     apuestas[jugadorActual].especiales[campo] = valor;
     guardarDatos();
+    renderApuestas();
     mostrarPuntajeEnVivo();
 }
 
-function renderEspeciales(){
-    const cont = document.getElementById("especialesContent");
+function renderApuestas() {
+    const cont = document.getElementById("apuestasContent");
     const cerrado = apuestas[jugadorActual]?.cerradoLocal || apuestas[jugadorActual]?.importadoAdmin;
     const esp = apuestas[jugadorActual]?.especiales || {};
+    
+    if(!jugadorActual) {
+        cont.innerHTML = '<div class="card"><small>Selecciona tu nombre arriba</small></div>';
+        return;
+    }
+    
     cont.innerHTML = `
-        <div><label>🏆 Campeón (15 pts)</label><input class="admin-input" value="${esp.campeon||''}" ${cerrado?'disabled':''} onchange="setEspecial('campeon',this.value)"></div>
-        <div><label>⚽ Goleador (10 pts)</label><input class="admin-input" value="${esp.goleador||''}" ${cerrado?'disabled':''} onchange="setEspecial('goleador',this.value)"></div>
-        <div><label>🧤 Portero (10 pts)</label><input class="admin-input" value="${esp.portero||''}" ${cerrado?'disabled':''} onchange="setEspecial('portero',this.value)"></div>
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">🏆 Campeón (15 pts)</div>
+                <select class="admin-input" id="apuestaCampeon" ${cerrado ? 'disabled' : ''}>
+                    <option value="">Seleccionar campeón</option>
+                    ${TODOS_EQUIPOS.map(eq => `<option ${esp.campeon === eq ? 'selected' : ''} value="${eq}">${eq}</option>`).join('')}
+                </select>
+            </div>
+            <div class="card">
+                <div class="card-title">⚽ Máximo Goleador (10 pts)</div>
+                <input class="admin-input" id="apuestaGoleador" value="${esp.goleador || ''}" placeholder="Nombre del jugador" ${cerrado ? 'disabled' : ''}>
+            </div>
+            <div class="card">
+                <div class="card-title">🧤 Portero menos goleado (10 pts)</div>
+                <input class="admin-input" id="apuestaPortero" value="${esp.portero || ''}" placeholder="Nombre del portero" ${cerrado ? 'disabled' : ''}>
+            </div>
+        </div>
     `;
+    
+    if(!cerrado) {
+        document.getElementById("apuestaCampeon")?.addEventListener('change', (e) => setEspecial('campeon', e.target.value));
+        document.getElementById("apuestaGoleador")?.addEventListener('change', (e) => setEspecial('goleador', e.target.value));
+        document.getElementById("apuestaPortero")?.addEventListener('change', (e) => setEspecial('portero', e.target.value));
+    }
+}
+
+// ============================================================
+// PUNTOS
+// ============================================================
+function calcularPuntosJugador(pid) {
+    let pts = 0;
+    const bets = apuestas[pid];
+    if(!bets) return 0;
+    
+    // Especiales
+    const esp = bets.especiales || {};
+    if(esp.campeon && esp.campeon === resultadosReales.campeon) pts += 15;
+    if(esp.goleador && esp.goleador === resultadosReales.goleador) pts += 10;
+    if(esp.portero && esp.portero === resultadosReales.portero) pts += 10;
+    
+    return pts;
+}
+
+function mostrarPuntajeEnVivo() {
+    if(jugadorActual){
+        const pts = calcularPuntosJugador(jugadorActual);
+        document.getElementById("puntosEnVivo").innerText = pts;
+        document.getElementById("puntajeVivo").style.display = "block";
+    }
+}
+
+// ============================================================
+// RANKING
+// ============================================================
+function renderRanking() {
+    const ranking = jugadores.map(j => ({
+        nombre: j.nombre,
+        pts: calcularPuntosJugador(j.id)
+    })).sort((a,b) => b.pts - a.pts);
+    
+    let html = `<table class="ranking-table">
+        <thead><tr><th>#</th><th>Jugador</th><th>Puntos</th></tr></thead>
+        <tbody>`;
+    ranking.forEach((j,i) => {
+        html += `<tr><td style="padding:12px;">${i+1}º</td><td style="padding:12px;">${j.nombre}</td><td style="padding:12px;"><span class="pts-badge">${j.pts} pts</span></td></tr>`;
+    });
+    html += `</tbody></table>`;
+    document.getElementById("rankingTabla").innerHTML = html;
 }
 
 // ============================================================
 // RESULTADOS EN VIVO
 // ============================================================
-function renderResultadosVivo(){
+function renderResultadosVivo() {
     let html = '<div class="grid-3">';
     for(const [g, eqs] of Object.entries(GRUPOS)){
         html += `<div class="card" style="padding:12px">
@@ -698,12 +594,12 @@ function renderResultadosVivo(){
             renderClasificacionAutomatica();
             renderMejoresTercerosAuto();
             mostrarPuntajeEnVivo();
-            calcularRanking();
+            renderRanking();
         };
     });
 }
 
-function renderClasificacionAutomatica(){
+function renderClasificacionAutomatica() {
     const clasificacion = calcularClasificacionGrupos();
     let html = '<div class="grid-2">';
     for(const [g, equipos] of Object.entries(clasificacion)){
@@ -719,7 +615,7 @@ function renderClasificacionAutomatica(){
     document.getElementById("clasificacionAutomatica").innerHTML = html;
 }
 
-function renderMejoresTercerosAuto(){
+function renderMejoresTercerosAuto() {
     const terceros = calcularMejoresTerceros();
     let html = `<div class="grid-3">`;
     if(terceros.length === 0){
@@ -736,44 +632,62 @@ function renderMejoresTercerosAuto(){
     document.getElementById("mejoresTercerosAuto").innerHTML = html;
 }
 
-function guardarEspecialesRealesVivo(){
+function guardarEspecialesRealesVivo() {
     resultadosReales.campeon = document.getElementById("realCampeonVivo")?.value || "";
     resultadosReales.goleador = document.getElementById("realGoleadorVivo")?.value || "";
     resultadosReales.portero = document.getElementById("realPorteroVivo")?.value || "";
     guardarDatos();
     mostrarPuntajeEnVivo();
-    calcularRanking();
-    alert("Especiales guardados");
+    renderRanking();
+    toast("✅ Especiales guardados");
 }
 
 // ============================================================
-// ADMIN
+// ADMIN - RESULTADOS
 // ============================================================
-function renderListaJugadoresAdmin(){
-    const cont = document.getElementById("listaJugadoresAdmin");
-    if(!jugadores.length){
-        cont.innerHTML = "<small>No hay jugadores</small>";
-        return;
-    }
-    cont.innerHTML = jugadores.map(j => `
-        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-            <span style="color:var(--text)">${j.nombre}</span>
-            <span>${apuestas[j.id]?.importadoAdmin ? '✅ Importado' : '⏳ Pendiente'}</span>
-        </div>
-    `).join('');
+function renderResultadosAdmin() {
+    let html = '<div class="grid-2" style="max-height:400px;overflow:auto">';
+    PARTIDOS.slice(0, 72).forEach(p => {
+        const real = resultadosReales.partidos[p.id] || "";
+        html += `<div class="card" style="padding:8px">
+            <small>${p.local} vs ${p.visitante}</small>
+            <select class="admin-resultado" data-id="${p.id}" style="width:100%;margin-top:4px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px;color:white">
+                <option value="">---</option>
+                <option ${real==='1'?'selected':''} value="1">1 - Gana ${p.local}</option>
+                <option ${real==='x'?'selected':''} value="x">X - Empate</option>
+                <option ${real==='2'?'selected':''} value="2">2 - Gana ${p.visitante}</option>
+            </select>
+        </div>`;
+    });
+    html += `</div>`;
+    document.getElementById("resultadosAdminContent").innerHTML = html;
+    
+    document.querySelectorAll(".admin-resultado").forEach(sel => {
+        sel.onchange = () => {
+            resultadosReales.partidos[parseInt(sel.dataset.id)] = sel.value;
+            guardarDatos();
+            mostrarPuntajeEnVivo();
+            renderRanking();
+        };
+    });
+}
+
+function guardarResultadosAdmin() {
+    guardarDatos();
+    toast("✅ Resultados guardados");
 }
 
 // ============================================================
 // IMPORTAR/EXPORTAR
 // ============================================================
-function exportarApuestas(){
+function exportarApuestas() {
     if(!jugadorActual) return;
     const jugador = jugadores.find(j=>j.id===jugadorActual);
     const datos = {
         version: "1.0",
         fecha: new Date().toISOString(),
         jugador: { id: jugador.id, nombre: jugador.nombre },
-        datos: apuestas[jugadorActual]
+        apuestas: apuestas[jugadorActual]
     };
     const blob = new Blob([JSON.stringify(datos,null,2)], {type:"application/json"});
     const url = URL.createObjectURL(blob);
@@ -782,39 +696,41 @@ function exportarApuestas(){
     a.download = `quiniela_${jugador.nombre}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    toast("📤 Apuestas exportadas");
 }
 
-function importarApuestas(){
-    const file = document.getElementById("importarArchivo").files[0];
-    if(!file) return;
+function importarApuestasAdmin() {
+    const fileInput = document.getElementById("importarArchivo");
+    const file = fileInput.files[0];
+    if(!file) { toast("⚠️ Selecciona un archivo primero"); return; }
+    
     const reader = new FileReader();
-    reader.onload = function(e){
-        try{
-            const data = JSON.parse(e.target.result);
-            if(!data.jugador || !data.datos){
-                alert("Archivo inválido");
-                return;
-            }
-            let jugadorExistente = jugadores.find(j=>j.id === data.jugador.id);
-            if(!jugadorExistente){
+    reader.onload = (event) => {
+        try {
+            const data = JSON.parse(event.target.result);
+            if(!data.jugador || !data.apuestas) throw new Error();
+            
+            let jugador = jugadores.find(j=>j.id === data.jugador.id);
+            if(!jugador) {
                 jugadores.push({ id: data.jugador.id, nombre: data.jugador.nombre });
-                apuestas[data.jugador.id] = data.datos;
+                apuestas[data.jugador.id] = data.apuestas;
                 apuestas[data.jugador.id].importadoAdmin = true;
             } else {
-                apuestas[data.jugador.id] = data.datos;
+                apuestas[data.jugador.id] = data.apuestas;
                 apuestas[data.jugador.id].importadoAdmin = true;
             }
             guardarDatos();
             renderizarTodo();
-            alert(`Apuestas de ${data.jugador.nombre} importadas correctamente`);
-        } catch(err){
-            alert("Error al leer el archivo");
+            toast(`✅ Apuestas de ${data.jugador.nombre} importadas`);
+            fileInput.value = '';
+        } catch(err) {
+            toast("❌ Archivo inválido");
         }
     };
     reader.readAsText(file);
 }
 
-function exportarTodosLosDatos(){
+function exportarTodosLosDatos() {
     const datos = { jugadores, apuestas, resultadosReales };
     const blob = new Blob([JSON.stringify(datos,null,2)], {type:"application/json"});
     const url = URL.createObjectURL(blob);
@@ -823,30 +739,47 @@ function exportarTodosLosDatos(){
     a.download = `quiniela_backup_${new Date().toISOString().slice(0,19)}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    toast("💾 Backup exportado");
+}
+
+function restaurarBackup() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const datos = JSON.parse(event.target.result);
+                if(datos.jugadores && datos.apuestas && datos.resultadosReales) {
+                    jugadores = datos.jugadores;
+                    apuestas = datos.apuestas;
+                    resultadosReales = datos.resultadosReales;
+                    guardarDatos();
+                    renderizarTodo();
+                    toast(`✅ Backup restaurado. ${jugadores.length} jugadores cargados.`);
+                } else {
+                    toast("❌ El archivo no es un backup válido");
+                }
+            } catch(err) {
+                toast("❌ Error al leer el backup");
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
 }
 
 // ============================================================
-// RANKING Y PDF
+// PDF
 // ============================================================
-function calcularRanking(){
+function generarPDFRanking() {
     const ranking = jugadores.map(j => ({
         nombre: j.nombre,
         pts: calcularPuntosJugador(j.id)
     })).sort((a,b) => b.pts - a.pts);
-    
-    let html = `<table class="ranking-table">
-        <thead><tr><th>#</th><th>Jugador</th><th>Puntos</th></thead>
-        <tbody>`;
-    ranking.forEach((j,i) => {
-        html += `<tr><td style="padding:12px;">${i+1}º</td><td style="padding:12px;">${j.nombre}</td><td style="padding:12px;"><span class="pts-badge">${j.pts} pts</span></td></tr>`;
-    });
-    html += `</tbody></table>`;
-    document.getElementById("rankingTabla").innerHTML = html;
-    return ranking;
-}
-
-function generarPDF(){
-    const ranking = calcularRanking();
     const fecha = new Date().toLocaleString();
     
     let htmlPDF = `
@@ -856,7 +789,7 @@ function generarPDF(){
             <p style="text-align: center; color: #666;">Fecha: ${fecha}</p>
             <hr>
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <thead><tr style="background: #00d4aa; color: white;"><th style="padding: 10px;">Posición</th><th style="padding: 10px;">Jugador</th><th style="padding: 10px;">Puntos</th></tr></thead>
+                <thead><tr style="background: #00d4aa; color: white;"><th style="padding: 10px;">#</th><th style="padding: 10px;">Jugador</th><th style="padding: 10px;">Puntos</th></tr></thead>
                 <tbody>`;
     
     ranking.forEach((j,i) => {
@@ -871,7 +804,7 @@ function generarPDF(){
                 </tbody>
             </table>
             <hr>
-            <p style="text-align: center; font-size: 12px; color: #666; margin-top: 30px;">
+            <p style="text-align: center; font-size: 12px; color: #666;">
                 Quiniela generada automáticamente · Los puntos se actualizan con los resultados reales
             </p>
         </div>
@@ -881,7 +814,7 @@ function generarPDF(){
         margin: [0.5, 0.5, 0.5, 0.5],
         filename: `quiniela_ranking_${new Date().toISOString().slice(0,10)}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, letterRendering: true },
+        html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
     
@@ -890,31 +823,45 @@ function generarPDF(){
     document.body.appendChild(element);
     html2pdf().set(opt).from(element).save().then(() => {
         document.body.removeChild(element);
-    });
+        toast("📄 PDF generado");
+    }).catch(() => toast("❌ Error al generar PDF"));
 }
 
 // ============================================================
-// RENDERIZADO GENERAL
+// RENDER GENERAL
 // ============================================================
-function renderizarTodo(){
-    renderJugadores();
-    renderSelectorApuestas();
-    renderGrupos();
-    renderClasificacion();
-    renderTerceros();
-    renderEspeciales();
-    renderResultadosVivo();
-    renderClasificacionAutomatica();
-    renderMejoresTercerosAuto();
-    renderListaJugadoresAdmin();
-    calcularRanking();
-    mostrarPuntajeEnVivo();
+function renderJugadores() {
+    const cont = document.getElementById("listaJugadores");
+    if(!jugadores.length) {
+        cont.innerHTML = '<div class="card"><small>👥 Añade jugadores con el botón de arriba</small></div>';
+        return;
+    }
+    cont.innerHTML = jugadores.map(j => `
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:12px">
+            <div><strong>${j.nombre}</strong> ${apuestas[j.id]?.importadoAdmin ? '✅ Importado' : ''}</div>
+            <button class="btn-small" onclick="eliminarJugador('${j.id}')" style="background:var(--red);color:white">✕</button>
+        </div>
+    `).join('');
 }
 
-function renderSelectorApuestas(){
+function renderListaJugadoresAdmin() {
+    const cont = document.getElementById("listaJugadoresAdmin");
+    if(!jugadores.length) {
+        cont.innerHTML = '<small>No hay jugadores aún</small>';
+        return;
+    }
+    cont.innerHTML = jugadores.map(j => `
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+            <span>${j.nombre}</span>
+            <span>${apuestas[j.id]?.importadoAdmin ? '✅ Importado' : '⏳ Pendiente'}</span>
+        </div>
+    `).join('');
+}
+
+function renderSelectorApuestas() {
     const cont = document.getElementById("selectorJugadorApuestas");
-    if(!jugadores.length){
-        cont.innerHTML = '<small>Primero añade tu nombre en la pestaña "Jugadores"</small>';
+    if(!jugadores.length) {
+        cont.innerHTML = '<small>Primero añade tu nombre en "Jugadores"</small>';
         return;
     }
     cont.innerHTML = jugadores.map(j => `
@@ -924,34 +871,41 @@ function renderSelectorApuestas(){
     `).join('');
 }
 
-function renderJugadores(){
-    const cont = document.getElementById("listaJugadores");
-    if(!jugadores.length){
-        cont.innerHTML = '<div class="card"><small>Añade jugadores con el botón de arriba</small></div>';
-        return;
-    }
-    cont.innerHTML = jugadores.map(j => `
-        <div class="card" style="display:flex;justify-content:space-between;padding:12px">
-            <div><strong style="color:var(--text)">${j.nombre}</strong> ${apuestas[j.id]?.importadoAdmin ? '✅ Importado' : ''}</div>
-            <button class="btn-small" onclick="eliminarJugador('${j.id}')" style="background:var(--red);color:white">✕</button>
-        </div>
-    `).join('');
+function renderizarTodo() {
+    renderJugadores();
+    renderSelectorApuestas();
+    renderListaJugadoresAdmin();
+    renderApuestas();
+    renderResultadosVivo();
+    renderClasificacionAutomatica();
+    renderMejoresTercerosAuto();
+    renderResultadosAdmin();
+    renderRanking();
+    mostrarPuntajeEnVivo();
 }
 
-function mostrarPanel(panel, btn){
+function mostrarPanel(panel, btn) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById(`panel-${panel}`).classList.add('active');
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     if(btn) btn.classList.add('active');
-    if(panel === 'resultados'){
+    if(panel === 'resultados') {
         renderClasificacionAutomatica();
         renderMejoresTercerosAuto();
     }
-    if(panel === 'ranking') calcularRanking();
+    if(panel === 'ranking') renderRanking();
 }
 
+// ============================================================
+// INICIALIZAR
+// ============================================================
 cargarDatos();
 renderizarTodo();
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW error:', err));
+}
 </script>
 </body>
 </html>
