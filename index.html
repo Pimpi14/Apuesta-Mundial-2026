@@ -12,6 +12,7 @@
     --bg:#080d1a;--bg2:#0f1623;--card:#111827;
     --border:#1e2d45;--accent:#00e5b8;--accent2:#f5c518;
     --red:#ff4757;--text:#eef2ff;--text2:#7b91b0;
+    --locked:#ff6b6b;--auto-bg:#1a3a2a;
   }
   body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;padding:16px}
   .container{max-width:1200px;margin:0 auto}
@@ -27,10 +28,13 @@
   .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
   .card-title{font-size:18px;font-weight:700;color:var(--accent2);margin-bottom:12px}
   .btn{background:var(--accent);border:none;padding:12px 20px;border-radius:30px;font-weight:700;cursor:pointer;width:100%;font-size:14px;margin-top:8px;color:#000;transition:all 0.3s}
-  .btn:hover{opacity:0.9}
+  .btn:hover{opacity:0.9;transform:translateY(-1px)}
   .btn-danger{background:var(--red);color:white}
   .btn-small{background:var(--accent);border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;font-size:12px;color:#000}
   .btn-small:hover{opacity:0.9;transform:scale(1.05)}
+  .btn-auto{background:linear-gradient(135deg, #00e5b8 0%, #00c853 100%);border:none;padding:10px 20px;border-radius:25px;font-weight:700;cursor:pointer;font-size:13px;color:#000;margin:8px 0;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,229,184,0.3)}
+  .btn-auto:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,229,184,0.5)}
+  .btn-secondary{background:var(--bg2);border:1px solid var(--border);padding:12px 20px;border-radius:30px;font-weight:700;cursor:pointer;font-size:14px;margin-top:8px;color:var(--text);width:100%}
   .jugador-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;background:var(--card);padding:12px;border-radius:16px}
   .jugador-btn{background:transparent;border:1px solid var(--border);padding:8px 16px;border-radius:30px;cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.3s}
   .jugador-btn:hover{background:#1a2744}
@@ -41,9 +45,16 @@
   .apuesta-btn.selected-1{background:rgba(0,229,184,0.3);border-color:var(--accent);color:var(--accent);font-weight:700}
   .apuesta-btn.selected-x{background:rgba(245,197,24,0.3);border-color:var(--accent2);color:var(--accent2);font-weight:700}
   .apuesta-btn.selected-2{background:rgba(255,71,87,0.3);border-color:var(--red);color:var(--red);font-weight:700}
+  .vivo-resultado-boton{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:14px;color:var(--text2);transition:all 0.3s;font-weight:500}
+  .vivo-resultado-boton:hover{background:#1a2744}
+  .vivo-resultado-boton.active-1{background:rgba(0,229,184,0.3);border-color:var(--accent);color:var(--accent);font-weight:700}
+  .vivo-resultado-boton.active-x{background:rgba(245,197,24,0.3);border-color:var(--accent2);color:var(--accent2);font-weight:700}
+  .vivo-resultado-boton.active-2{background:rgba(255,71,87,0.3);border-color:var(--red);color:var(--red);font-weight:700}
   .grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
   .admin-input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:14px}
   .admin-input:focus{outline:none;border-color:var(--accent)}
+  .admin-input.auto-filled{background:var(--auto-bg);border-color:var(--accent);color:var(--accent);font-weight:600}
   .ranking-table{width:100%;border-collapse:collapse}
   .ranking-table th,.ranking-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border)}
   .ranking-table th{background:rgba(0,229,184,0.1);color:var(--accent);font-weight:700}
@@ -55,11 +66,28 @@
   .puntaje-vivo span{font-size:28px;font-weight:700;color:var(--accent)}
   .partido-item{margin:10px 0;padding:12px;background:var(--bg2);border-radius:10px;border-left:3px solid var(--accent)}
   .partido-header{font-size:11px;color:var(--accent2);margin-bottom:4px}
+  .clasif-fila{display:flex;gap:8px;margin:8px 0;align-items:center;flex-wrap:wrap}
+  .file-input{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;width:100%;margin-bottom:12px;color:var(--text)}
   .grupo-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
   .grupo-tab{background:var(--bg2);border:1px solid var(--border);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:12px;color:var(--text2)}
   .grupo-tab.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+  .eliminatoria-card{background:linear-gradient(135deg, #1a2744 0%, #2a3a5c 100%);border:2px solid var(--accent2);border-radius:12px;padding:16px;margin:10px 0}
+  .fase-titulo{color:var(--accent);font-size:16px;font-weight:700;margin-bottom:12px}
+  .equipo-input{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:13px;width:100%;margin:4px 0}
+  .equipo-input:focus{outline:none;border-color:var(--accent)}
+  .equipo-input.predicho{background:var(--auto-bg);border-color:var(--accent);color:var(--accent);font-weight:500}
+  .tercero-checkbox{margin-right:8px;cursor:pointer}
+  .tercero-item{display:flex;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;margin:4px 0;cursor:pointer;transition:all 0.3s;border:1px solid transparent}
+  .tercero-item:hover:not(.locked){background:#1a2744}
+  .tercero-item.selected{background:rgba(0,229,184,0.2);border:1px solid var(--accent)}
+  .tercero-item.locked{background:#1a1a2e;border:1px solid var(--locked);cursor:not-allowed;opacity:0.6}
+  .locked-badge{font-size:10px;background:var(--locked);color:white;padding:2px 6px;border-radius:10px;margin-left:6px}
+  .info-text{font-size:12px;color:var(--text2);margin-bottom:12px;padding:8px;background:rgba(255,107,107,0.1);border-left:3px solid var(--locked);border-radius:4px}
+  .info-success{font-size:12px;color:var(--accent);margin-bottom:12px;padding:8px;background:rgba(0,229,184,0.1);border-left:3px solid var(--accent);border-radius:4px}
   .fecha-titulo{color:var(--accent);font-size:14px;font-weight:600;margin:16px 0 8px 0;padding:8px;background:rgba(0,229,184,0.05);border-radius:8px}
-  @media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+  .zona-horaria{font-size:11px;color:var(--text2);font-weight:normal}
+  .resumen-seleccion{margin-top:12px;padding:10px;background:rgba(0,229,184,0.05);border-radius:8px;font-size:13px}
+  @media(max-width:600px){.grid-2,.grid-3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -72,6 +100,8 @@
   <div class="tabs">
     <button class="tab active" data-panel="jugadores">👥 Jugadores</button>
     <button class="tab" data-panel="apuestas">📝 Mis Apuestas</button>
+    <button class="tab" data-panel="resultados">🎯 Resultados en vivo</button>
+    <button class="tab" data-panel="admin">🔧 Admin</button>
     <button class="tab" data-panel="ranking">📊 Ranking</button>
     <button class="tab" data-panel="puntuacion">📋 Puntuación</button>
   </div>
@@ -94,9 +124,89 @@
     <div id="puntajeVivo" class="puntaje-vivo" style="display:none">🏆 <strong>TUS PUNTOS:</strong> <span id="puntosVivo">0</span> pts</div>
     
     <div class="card">
-      <div class="card-title">🗓 FASE DE GRUPOS (3 pts por acierto)</div>
+      <div class="card-title">🗓 FASE DE GRUPOS (3 pts por acierto) <span class="zona-horaria">· Horario España (CEST)</span></div>
       <div class="grupo-tabs" id="grupoSelector"></div>
       <div id="gruposContent"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">📋 CLASIFICACIÓN (1º y 2º de cada grupo) - 2 pts por equipo</div>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:12px">Los equipos seleccionados como 1º o 2º <strong style="color:var(--locked)">NO podrán ser elegidos como mejores terceros</strong></p>
+      <div id="clasifContent"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">🎯 MEJORES 8 TERCEROS (2 pts por acierto)</div>
+      <div class="info-text">⚠️ <strong>Importante:</strong> Los equipos seleccionados como 1º o 2º están <strong>bloqueados</strong>.</div>
+      <div id="mejoresTercerosContent"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">🏆 ELIMINATORIAS (Puntuación progresiva) <span class="zona-horaria">· Horario España (CEST)</span></div>
+      <button class="btn-auto" id="btnAutocompletar">🤖 AUTORELLENAR ELIMINATORIAS CON MIS PREDICCIONES</button>
+      <div class="info-success" id="prediccionInfo" style="display:none">✅ Eliminatorias rellenadas automáticamente con tus clasificados y mejores terceros.</div>
+      <div id="eliminatoriasContent"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">⭐ ESPECIALES</div>
+      <div id="especialesContent"></div>
+    </div>
+    
+    <div class="flex-row">
+      <button class="btn" id="btnExportar">📤 EXPORTAR MIS APUESTAS</button>
+      <button class="btn btn-danger" id="btnCerrar">🔒 CERRAR APUESTAS</button>
+    </div>
+  </div>
+
+  <!-- PANEL RESULTADOS EN VIVO -->
+  <div id="panel-resultados" class="panel">
+    <div class="card">
+      <div class="card-title">🎯 RESULTADOS REALES - Fase de grupos <span class="zona-horaria">· Horario España (CEST)</span></div>
+      <div class="grupo-tabs" id="grupoSelectorResultados"></div>
+      <div id="resultadosVivoContent"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎯 MEJORES 8 TERCEROS REALES</div>
+      <div id="mejoresTercerosRealesContent"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 RESULTADOS REALES - Eliminatorias</div>
+      <div id="resultadosEliminatoriasContent"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⭐ ESPECIALES REALES</div>
+      <div class="flex-row">
+        <select id="realCampeonVivo" class="admin-input" style="flex:1"><option value="">-- Campeón --</option></select>
+        <input id="realGoleadorVivo" class="admin-input" placeholder="Goleador" style="flex:1">
+        <input id="realPorteroVivo" class="admin-input" placeholder="Portero" style="flex:1">
+      </div>
+      <button class="btn" id="btnGuardarEspVivo">💾 Guardar especiales</button>
+    </div>
+  </div>
+
+  <!-- PANEL ADMIN -->
+  <div id="panel-admin" class="panel">
+    <div class="card">
+      <div class="card-title">📦 IMPORTAR APUESTAS</div>
+      <input type="file" id="importarArchivo" accept=".json" class="file-input">
+      <button class="btn" id="btnImportar">📂 Importar apuesta de un jugador</button>
+    </div>
+    <div class="card">
+      <div class="card-title">⭐ ESPECIALES REALES</div>
+      <div class="flex-row">
+        <select id="realCampeonAdmin" class="admin-input" style="flex:1"><option value="">-- Campeón --</option></select>
+        <input id="realGoleadorAdmin" class="admin-input" placeholder="Goleador" style="flex:1">
+        <input id="realPorteroAdmin" class="admin-input" placeholder="Portero" style="flex:1">
+      </div>
+      <button class="btn" id="btnGuardarEspAdmin">💾 Guardar especiales</button>
+    </div>
+    <div class="card">
+      <div class="card-title">💾 RESPALDO</div>
+      <div class="flex-row">
+        <button class="btn" id="btnExportarBackup" style="flex:1">💾 Exportar backup</button>
+        <button class="btn btn-secondary" id="btnRestaurarBackup" style="flex:1">📥 Restaurar backup</button>
+      </div>
     </div>
   </div>
 
@@ -104,6 +214,7 @@
   <div id="panel-ranking" class="panel">
     <div class="card">
       <div class="card-title">🏆 CLASIFICACIÓN GENERAL</div>
+      <button class="btn-small" id="btnPDF" style="margin-bottom:12px">📄 Descargar PDF</button>
       <div id="rankingTabla"></div>
     </div>
   </div>
@@ -113,14 +224,20 @@
     <div class="card">
       <div class="card-title">📋 SISTEMA DE PUNTUACIÓN</div>
       <table style="width:100%">
-        <tr style="background:rgba(0,229,184,0.1)">
-          <th>Categoría</th>
-          <th>Puntos</th>
-        </tr>
+        <tr style="background:rgba(0,229,184,0.1)"><th>Categoría</th><th>Puntos</th></tr>
         <tr><td>1X2 Fase grupos</td><td><strong style="color:var(--accent)">3 pts</strong> por acierto</td></tr>
+        <tr><td>Clasificación (1º y 2º)</td><td><strong style="color:var(--accent)">2 pts</strong> por equipo</td></tr>
+        <tr><td>Mejores 8 terceros</td><td><strong style="color:var(--accent)">2 pts</strong> por equipo</td></tr>
         <tr><td>🏆 Campeón</td><td><strong style="color:var(--accent)">15 pts</strong></td></tr>
         <tr><td>⚽ Máximo goleador</td><td><strong style="color:var(--accent)">10 pts</strong></td></tr>
         <tr><td>🧤 Portero menos goleado</td><td><strong style="color:var(--accent)">10 pts</strong></td></tr>
+        <tr style="background:rgba(245,197,24,0.1)"><td colspan="2"><strong style="color:var(--accent2)">ELIMINATORIAS:</strong></td></tr>
+        <tr><td>Dieciseisavos</td><td><strong style="color:var(--accent)">5 pts</strong></td></tr>
+        <tr><td>Octavos</td><td><strong style="color:var(--accent)">7 pts</strong></td></tr>
+        <tr><td>Cuartos</td><td><strong style="color:var(--accent)">10 pts</strong></td></tr>
+        <tr><td>Semifinales</td><td><strong style="color:var(--accent)">12 pts</strong></td></tr>
+        <tr><td>Tercer puesto</td><td><strong style="color:var(--accent)">10 pts</strong></td></tr>
+        <tr><td>Final</td><td><strong style="color:var(--accent)">15 pts</strong></td></tr>
       </table>
     </div>
   </div>
@@ -145,428 +262,52 @@ const GRUPOS = {
   K:["🇵🇹 Portugal","🇨🇩 Congo DR","🇺🇿 Uzbekistán","🇨🇴 Colombia"],
   L:["🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra","🇭🇷 Croacia","🇬🇭 Ghana","🇵🇦 Panamá"]
 };
+const TODOS_EQUIPOS = [...new Set(Object.values(GRUPOS).flat())].sort();
 
-// Generar partidos de fase de grupos
-const PARTIDOS = [];
-let pid = 0;
-for(const [g, eqs] of Object.entries(GRUPOS)){
-  for(let i = 0; i < eqs.length; i++){
-    for(let j = i + 1; j < eqs.length; j++){
-      PARTIDOS.push({id: pid++, grupo: g, local: eqs[i], visitante: eqs[j]});
-    }
-  }
-}
-
-// Agrupar partidos por grupo
-const PARTIDOS_POR_GRUPO = {};
-PARTIDOS.forEach(p => {
-  if(!PARTIDOS_POR_GRUPO[p.grupo]) PARTIDOS_POR_GRUPO[p.grupo] = [];
-  PARTIDOS_POR_GRUPO[p.grupo].push(p);
-});
-
-// ============================================================
-// ESTADO GLOBAL
-// ============================================================
-let jugadores = [];
-let apuestas = {};
-let resultadosReales = { grupos: {}, campeon: "", goleador: "", portero: "" };
-let jugadorActual = null;
-let grupoActivo = "A";
-
-// ============================================================
-// LOCAL STORAGE
-// ============================================================
-function guardarDatos(){
-  try {
-    localStorage.setItem("quiniela_mundial2026_debug", JSON.stringify({jugadores, apuestas, resultadosReales}));
-    console.log('✅ Datos guardados:', {jugadores: jugadores.length, jugadorActual});
-  } catch(e) {
-    console.error('❌ Error al guardar:', e);
-  }
-}
-
-function cargarDatos(){
-  try {
-    const data = localStorage.getItem("quiniela_mundial2026_debug");
-    if(data){
-      const p = JSON.parse(data);
-      jugadores = p.jugadores || [];
-      apuestas = p.apuestas || {};
-      resultadosReales = p.resultadosReales || {grupos:{}, campeon:"", goleador:"", portero:""};
-      console.log('✅ Datos cargados:', {jugadores: jugadores.length});
-    }
-  } catch(e) {
-    console.error('❌ Error al cargar:', e);
-  }
-  if(jugadores.length && !jugadorActual) {
-    jugadorActual = jugadores[0].id;
-  }
-}
-
-// ============================================================
-// TOAST
-// ============================================================
-function toast(msg){
-  console.log('🔔 Toast:', msg);
-  const el = document.getElementById('toast');
-  if(!el) {
-    console.error('❌ Elemento toast no encontrado');
-    alert(msg);
-    return;
-  }
-  el.textContent = msg; 
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
-}
-
-// ============================================================
-// AGREGAR JUGADOR - FUNCIÓN PRINCIPAL
-// ============================================================
-function agregarJugador(){
-  console.log('🟢 Función agregarJugador() llamada');
-  
-  const input = document.getElementById("nuevoJugador");
-  if(!input){
-    console.error('❌ Input nuevoJugador no encontrado');
-    toast("Error: No se encontró el campo de nombre");
-    return;
-  }
-  
-  const nombre = input.value.trim();
-  console.log('📝 Nombre ingresado:', nombre);
-  
-  if(!nombre){ 
-    toast("❌ Escribe un nombre"); 
-    return; 
-  }
-  
-  // Verificar si ya existe
-  const existe = jugadores.find(j => j.nombre.toLowerCase() === nombre.toLowerCase());
-  if(existe){ 
-    toast("❌ Ya existe ese nombre"); 
-    return; 
-  }
-  
-  // Crear nuevo jugador
-  const id = "j_" + Date.now();
-  console.log('🆔 Nuevo ID:', id);
-  
-  jugadores.push({id, nombre});
-  console.log('👥 Jugadores ahora:', jugadores.length);
-  
-  apuestas[id] = { 
-    grupos: {}, 
-    clasif: {}, 
-    especiales: {campeon:"", goleador:"", portero:""}, 
-    cerrado: false 
-  };
-  
-  // Limpiar input
-  input.value = ""; 
-  
-  // Guardar y renderizar
-  guardarDatos(); 
-  renderizarTodo(); 
-  
-  // Seleccionar automáticamente al nuevo jugador
-  jugadorActual = id;
-  renderizarTodo();
-  
-  toast("✅ " + nombre + " añadido correctamente");
-  console.log('✅ Jugador añadido exitosamente:', nombre);
-}
-
-// ============================================================
-// ELIMINAR JUGADOR
-// ============================================================
-function eliminarJugador(id){
-  console.log('🗑 Eliminando jugador:', id);
-  const j = jugadores.find(j => j.id === id);
-  if(!j) return;
-  
-  if(confirm("¿Eliminar a " + j.nombre + "?")){
-    jugadores = jugadores.filter(j => j.id !== id);
-    delete apuestas[id];
-    if(jugadorActual === id) {
-      jugadorActual = jugadores.length > 0 ? jugadores[0].id : null;
-    }
-    guardarDatos(); 
-    renderizarTodo(); 
-    toast("🗑 " + j.nombre + " eliminado");
-  }
-}
-
-// ============================================================
-// CAMBIAR JUGADOR ACTIVO
-// ============================================================
-function cambiarJugador(id){ 
-  console.log('🔄 Cambiando a jugador:', id);
-  jugadorActual = id; 
-  renderizarTodo(); 
-}
-
-// ============================================================
-// RENDER JUGADORES
-// ============================================================
-function renderJugadores(){
-  console.log('🎨 Renderizando jugadores...');
-  const cont = document.getElementById("listaJugadores");
-  if(!cont) {
-    console.error('❌ Contenedor listaJugadores no encontrado');
-    return;
-  }
-  
-  if(!jugadores.length){ 
-    cont.innerHTML = '<div class="card"><p style="color:var(--text2);text-align:center">👆 Añade tu nombre arriba para empezar</p></div>'; 
-    return; 
-  }
-  
-  cont.innerHTML = jugadores.map(j => `
-    <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <strong style="font-size:16px">${j.nombre}</strong> 
-        ${apuestas[j.id]?.cerrado ? '🔒' : '✏️'}
-      </div>
-      <button class="btn-small" onclick="eliminarJugador('${j.id}')" style="background:var(--red);color:white">✕ Eliminar</button>
-    </div>
-  `).join('');
-  
-  console.log('✅ Jugadores renderizados:', jugadores.length);
-}
-
-// ============================================================
-// RENDER SELECTOR DE JUGADOR
-// ============================================================
-function renderSelector(){
-  const cont = document.getElementById("selectorJugador");
-  if(!cont) return;
-  
-  if(!jugadores.length){ 
-    cont.innerHTML = '<small style="color:var(--text2)">Añade tu nombre en la pestaña Jugadores</small>'; 
-    return; 
-  }
-  
-  cont.innerHTML = jugadores.map(j => `
-    <button class="jugador-btn ${jugadorActual === j.id ? 'active' : ''}" onclick="cambiarJugador('${j.id}')">
-      ${j.nombre} ${apuestas[j.id]?.cerrado ? '🔒' : ''}
-    </button>
-  `).join('');
-}
-
-// ============================================================
-// GRUPOS 1X2
-// ============================================================
-function setGrupoPronostico(partidoId, valor){
-  if(!jugadorActual) return;
-  if(apuestas[jugadorActual].cerrado) {
-    toast("🔒 Tus apuestas están cerradas");
-    return;
-  }
-  
-  if(apuestas[jugadorActual].grupos[partidoId] === valor) {
-    delete apuestas[jugadorActual].grupos[partidoId];
-  } else {
-    apuestas[jugadorActual].grupos[partidoId] = valor;
-  }
-  guardarDatos(); 
-  renderGrupos(); 
-  mostrarPuntajeVivo();
-}
-
-function renderGrupos(){
-  const cont = document.getElementById("gruposContent");
-  if(!cont) return;
-  
-  if(!jugadorActual){ 
-    cont.innerHTML = '<p style="color:var(--text2)">Selecciona tu nombre arriba</p>'; 
-    return; 
-  }
-  
-  const cerrado = apuestas[jugadorActual].cerrado;
-  const bets = apuestas[jugadorActual].grupos || {};
-  const partidosGrupo = PARTIDOS_POR_GRUPO[grupoActivo] || [];
-  
-  let html = `<div style="margin-bottom:12px;color:var(--accent)"><strong>Grupo ${grupoActivo}</strong> - ${partidosGrupo.length} partidos</div>`;
-  
-  partidosGrupo.forEach(p => { 
-    const prono = bets[p.id] || "";
-    html += `
-      <div class="partido-item">
-        <div style="margin-bottom:8px;font-weight:500">${p.local} vs ${p.visitante}</div>
-        <div class="botones">
-          <button class="apuesta-btn ${prono==='1'?'selected-1':''}" onclick="setGrupoPronostico(${p.id},'1')" ${cerrado?'disabled':''}>1</button>
-          <button class="apuesta-btn ${prono==='x'?'selected-x':''}" onclick="setGrupoPronostico(${p.id},'x')" ${cerrado?'disabled':''}>X</button>
-          <button class="apuesta-btn ${prono==='2'?'selected-2':''}" onclick="setGrupoPronostico(${p.id},'2')" ${cerrado?'disabled':''}>2</button>
-        </div>
-      </div>`;
-  });
-  
-  cont.innerHTML = html;
-}
-
-function renderGrupoSelector(){
-  const cont = document.getElementById("grupoSelector");
-  if(!cont) return;
-  cont.innerHTML = Object.keys(GRUPOS).map(g => `
-    <button class="grupo-tab ${grupoActivo === g ? 'active' : ''}" onclick="cambiarGrupoActivo('${g}')">Grupo ${g}</button>
-  `).join('');
-}
-
-function cambiarGrupoActivo(grupo){ 
-  grupoActivo = grupo; 
-  renderGrupoSelector(); 
-  renderGrupos(); 
-}
-
-// ============================================================
-// PUNTOS
-// ============================================================
-function calcularPuntosJugador(pid){
-  let pts = 0;
-  const bets = apuestas[pid];
-  if(!bets) return 0;
-  
-  for(const [id, prono] of Object.entries(bets.grupos||{})){
-    const real = resultadosReales.grupos[id];
-    if(real && prono === real) pts += 3;
-  }
-  
-  const esp = bets.especiales || {};
-  if(esp.campeon && esp.campeon === resultadosReales.campeon) pts += 15;
-  if(esp.goleador && esp.goleador === resultadosReales.goleador) pts += 10;
-  if(esp.portero && esp.portero === resultadosReales.portero) pts += 10;
-  
-  return pts;
-}
-
-function mostrarPuntajeVivo(){
-  if(jugadorActual){
-    const pts = calcularPuntosJugador(jugadorActual);
-    document.getElementById("puntosVivo").innerText = pts;
-    document.getElementById("puntajeVivo").style.display = "block";
-  }
-}
-
-function renderRanking(){
-  const ranking = jugadores.map(j => ({
-    nombre: j.nombre, 
-    pts: calcularPuntosJugador(j.id)
-  })).sort((a,b) => b.pts - a.pts);
-  
-  let html = '<table class="ranking-table"><thead><tr><th>#</th><th>Jugador</th><th>Puntos</th></tr></thead><tbody>';
-  ranking.forEach((j, i) => { 
-    html += `<tr><td>${i+1}º</td><td>${j.nombre}</td><td><span class="pts-badge">${j.pts} pts</span></td></tr>`; 
-  });
-  html += '</tbody></table>'; 
-  
-  const cont = document.getElementById("rankingTabla");
-  if(cont) cont.innerHTML = html;
-}
-
-// ============================================================
-// RENDER GENERAL
-// ============================================================
-function renderizarTodo(){
-  console.log('🔄 Renderizando todo...');
-  renderJugadores(); 
-  renderSelector(); 
-  renderGrupoSelector();
-  renderGrupos(); 
-  renderRanking(); 
-  mostrarPuntajeVivo();
-  console.log('✅ Renderizado completo');
-}
-
-// ============================================================
-// NAVEGACIÓN POR PESTAÑAS
-// ============================================================
-function mostrarPanel(panelName){
-  console.log('📑 Cambiando a panel:', panelName);
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  const panel = document.getElementById(`panel-${panelName}`);
-  if(panel) panel.classList.add('active');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-}
-
-// ============================================================
-// INICIALIZACIÓN
-// ============================================================
-function inicializarEventos(){
-  console.log('🔧 Inicializando eventos...');
-  
-  // Botón Agregar Jugador
-  const btnAgregar = document.getElementById('btnAgregar');
-  if(btnAgregar) {
-    console.log('✅ Botón Agregar encontrado');
-    btnAgregar.onclick = function(e) {
-      e.preventDefault();
-      console.log('🖱️ Click en botón Agregar');
-      agregarJugador();
-    };
-  } else {
-    console.error('❌ Botón Agregar NO encontrado');
-  }
-  
-  // Input de jugador - Enter para agregar
-  const inputJugador = document.getElementById('nuevoJugador');
-  if(inputJugador) {
-    console.log('✅ Input de jugador encontrado');
-    inputJugador.addEventListener('keypress', function(e) {
-      if(e.key === 'Enter') {
-        e.preventDefault();
-        console.log('⌨️ Enter presionado en input');
-        agregarJugador();
-      }
-    });
-  } else {
-    console.error('❌ Input de jugador NO encontrado');
-  }
-  
-  // Tabs de navegación
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-      const panelName = this.dataset.panel;
-      if(panelName) {
-        mostrarPanel(panelName);
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-      }
-    });
-  });
-  
-  console.log('✅ Eventos inicializados');
-}
-
-// ============================================================
-// INICIO DE LA APLICACIÓN
-// ============================================================
-console.log('🚀 Iniciando Quiniela Mundial 2026...');
-
-// Cargar datos del localStorage
-cargarDatos();
-
-// Inicializar eventos
-inicializarEventos();
-
-// Renderizar todo
-renderizarTodo();
-
-// Si no hay jugador seleccionado pero hay jugadores, seleccionar el primero
-if(!jugadorActual && jugadores.length > 0) {
-  jugadorActual = jugadores[0].id;
-  renderizarTodo();
-}
-
-console.log('✅ Aplicación lista');
-console.log('📊 Jugadores cargados:', jugadores.length);
-console.log('👤 Jugador actual:', jugadorActual);
-
-// Exponer funciones globalmente para que los onclick funcionen
-window.agregarJugador = agregarJugador;
-window.eliminarJugador = eliminarJugador;
-window.cambiarJugador = cambiarJugador;
-window.setGrupoPronostico = setGrupoPronostico;
-window.cambiarGrupoActivo = cambiarGrupoActivo;
-</script>
-</body>
-</html>
+// Partidos con horario España (CEST = Perú +7h)
+const PARTIDOS_CRONOLOGICOS = [
+  {id:1, grupo:"A", local:"🇲🇽 México", visitante:"🇿🇦 Sudáfrica", fecha:"Jue 11 jun", hora:"21:00"},
+  {id:2, grupo:"A", local:"🇰🇷 Corea del Sur", visitante:"🇨🇿 Chequia", fecha:"Vie 12 jun", hora:"04:00 (+1)"},
+  {id:3, grupo:"B", local:"🇨🇦 Canadá", visitante:"🇧🇦 Bosnia", fecha:"Vie 12 jun", hora:"21:00"},
+  {id:4, grupo:"D", local:"🇺🇸 USA", visitante:"🇵🇾 Paraguay", fecha:"Sáb 13 jun", hora:"03:00 (+1)"},
+  {id:5, grupo:"D", local:"🇦🇺 Australia", visitante:"🇹🇷 Turquía", fecha:"Sáb 13 jun", hora:"06:00 (+1)"},
+  {id:6, grupo:"B", local:"🇶🇦 Qatar", visitante:"🇨🇭 Suiza", fecha:"Sáb 13 jun", hora:"21:00"},
+  {id:7, grupo:"C", local:"🇧🇷 Brasil", visitante:"🇲🇦 Marruecos", fecha:"Dom 14 jun", hora:"00:00 (+1)"},
+  {id:8, grupo:"C", local:"🇭🇹 Haití", visitante:"🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia", fecha:"Dom 14 jun", hora:"03:00 (+1)"},
+  {id:9, grupo:"E", local:"🇩🇪 Alemania", visitante:"🇨🇼 Curazao", fecha:"Dom 14 jun", hora:"19:00"},
+  {id:10, grupo:"F", local:"🇳🇱 Países Bajos", visitante:"🇯🇵 Japón", fecha:"Dom 14 jun", hora:"22:00"},
+  {id:11, grupo:"E", local:"🇨🇮 Costa de Marfil", visitante:"🇪🇨 Ecuador", fecha:"Lun 15 jun", hora:"01:00 (+1)"},
+  {id:12, grupo:"F", local:"🇸🇪 Suecia", visitante:"🇹🇳 Túnez", fecha:"Lun 15 jun", hora:"04:00 (+1)"},
+  {id:13, grupo:"H", local:"🇪🇸 España", visitante:"🇨🇻 Cabo Verde", fecha:"Lun 15 jun", hora:"18:00"},
+  {id:14, grupo:"G", local:"🇧🇪 Bélgica", visitante:"🇪🇬 Egipto", fecha:"Lun 15 jun", hora:"21:00"},
+  {id:15, grupo:"H", local:"🇸🇦 Arabia Saudí", visitante:"🇺🇾 Uruguay", fecha:"Mar 16 jun", hora:"00:00 (+1)"},
+  {id:16, grupo:"G", local:"🇮🇷 Irán", visitante:"🇳🇿 Nueva Zelanda", fecha:"Mar 16 jun", hora:"03:00 (+1)"},
+  {id:17, grupo:"J", local:"🇦🇹 Austria", visitante:"🇯🇴 Jordania", fecha:"Mar 16 jun", hora:"06:00 (+1)"},
+  {id:18, grupo:"I", local:"🇫🇷 Francia", visitante:"🇸🇳 Senegal", fecha:"Mar 16 jun", hora:"21:00"},
+  {id:19, grupo:"I", local:"🇮🇶 Irak", visitante:"🇳🇴 Noruega", fecha:"Mié 17 jun", hora:"00:00 (+1)"},
+  {id:20, grupo:"J", local:"🇦🇷 Argentina", visitante:"🇩🇿 Argelia", fecha:"Mié 17 jun", hora:"03:00 (+1)"},
+  {id:21, grupo:"K", local:"🇵🇹 Portugal", visitante:"🇨🇩 Congo DR", fecha:"Mié 17 jun", hora:"19:00"},
+  {id:22, grupo:"L", local:"🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra", visitante:"🇭🇷 Croacia", fecha:"Mié 17 jun", hora:"22:00"},
+  {id:23, grupo:"L", local:"🇬🇭 Ghana", visitante:"🇵🇦 Panamá", fecha:"Jue 18 jun", hora:"01:00 (+1)"},
+  {id:24, grupo:"K", local:"🇺🇿 Uzbekistán", visitante:"🇨🇴 Colombia", fecha:"Jue 18 jun", hora:"04:00 (+1)"},
+  {id:25, grupo:"A", local:"🇨🇿 Chequia", visitante:"🇿🇦 Sudáfrica", fecha:"Jue 18 jun", hora:"18:00"},
+  {id:26, grupo:"B", local:"🇨🇭 Suiza", visitante:"🇧🇦 Bosnia", fecha:"Jue 18 jun", hora:"21:00"},
+  {id:27, grupo:"B", local:"🇨🇦 Canadá", visitante:"🇶🇦 Qatar", fecha:"Vie 19 jun", hora:"00:00 (+1)"},
+  {id:28, grupo:"A", local:"🇲🇽 México", visitante:"🇰🇷 Corea del Sur", fecha:"Vie 19 jun", hora:"03:00 (+1)"},
+  {id:29, grupo:"D", local:"🇹🇷 Turquía", visitante:"🇵🇾 Paraguay", fecha:"Vie 19 jun", hora:"06:00 (+1)"},
+  {id:30, grupo:"D", local:"🇺🇸 USA", visitante:"🇦🇺 Australia", fecha:"Vie 19 jun", hora:"21:00"},
+  {id:31, grupo:"C", local:"🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia", visitante:"🇲🇦 Marruecos", fecha:"Sáb 20 jun", hora:"00:00 (+1)"},
+  {id:32, grupo:"C", local:"🇧🇷 Brasil", visitante:"🇭🇹 Haití", fecha:"Sáb 20 jun", hora:"03:00 (+1)"},
+  {id:33, grupo:"F", local:"🇹🇳 Túnez", visitante:"🇯🇵 Japón", fecha:"Sáb 20 jun", hora:"06:00 (+1)"},
+  {id:34, grupo:"F", local:"🇳🇱 Países Bajos", visitante:"🇸🇪 Suecia", fecha:"Sáb 20 jun", hora:"19:00"},
+  {id:35, grupo:"E", local:"🇩🇪 Alemania", visitante:"🇨🇮 Costa de Marfil", fecha:"Sáb 20 jun", hora:"22:00"},
+  {id:36, grupo:"E", local:"🇪🇨 Ecuador", visitante:"🇨🇼 Curazao", fecha:"Dom 21 jun", hora:"02:00 (+1)"},
+  {id:37, grupo:"H", local:"🇪🇸 España", visitante:"🇸🇦 Arabia Saudí", fecha:"Dom 21 jun", hora:"18:00"},
+  {id:38, grupo:"G", local:"🇧🇪 Bélgica", visitante:"🇮🇷 Irán", fecha:"Dom 21 jun", hora:"21:00"},
+  {id:39, grupo:"H", local:"🇺🇾 Uruguay", visitante:"🇨🇻 Cabo Verde", fecha:"Lun 22 jun", hora:"00:00 (+1)"},
+  {id:40, grupo:"G", local:"🇳🇿 Nueva Zelanda", visitante:"🇪🇬 Egipto", fecha:"Lun 22 jun", hora:"03:00 (+1)"},
+  {id:41, grupo:"J", local:"🇦🇷 Argentina", visitante:"🇦🇹 Austria", fecha:"Lun 22 jun", hora:"19:00"},
+  {id:42, grupo:"I", local:"🇫🇷 Francia", visitante:"🇮🇶 Irak", fecha:"Lun 22 jun", hora:"23:00"},
+  {id:43, grupo:"I", local:"🇳🇴 Noruega", visitante:"🇸🇳 Senegal", fecha:"Mar 23 jun", hora:"02:00 (+1)"},
+  {id:44, grupo:"J", local:"🇯🇴 Jordania", visitante:"🇩🇿 Argelia", fecha:"Mar 23 jun", hora:"05:00 (+1)"},
+  {id:45, grupo:"K", local:"🇵🇹 Portugal",
