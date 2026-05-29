@@ -224,11 +224,24 @@ const ELIMINATORIAS={
 let jugadores=[],apuestas={},resultadosReales={grupos:{},campeon:"",goleador:"",mvp:""};
 let jugadorActual=null,grupoActivo="A",grupoActivoResultados="A";
 
-function guardar(){localStorage.setItem("q26v35",JSON.stringify({jugadores,apuestas,resultadosReales}));}
-function cargar(){try{const d=localStorage.getItem("q26v35");if(d){const p=JSON.parse(d);jugadores=p.jugadores||[];apuestas=p.apuestas||{};resultadosReales=p.resultadosReales||{grupos:{},campeon:"",goleador:"",mvp:""};}}catch(e){}if(jugadores.length&&!jugadorActual)jugadorActual=jugadores[0].id;}
+function guardar(){localStorage.setItem("q26v36",JSON.stringify({jugadores,apuestas,resultadosReales}));}
+function cargar(){try{const d=localStorage.getItem("q26v36");if(d){const p=JSON.parse(d);jugadores=p.jugadores||[];apuestas=p.apuestas||{};resultadosReales=p.resultadosReales||{grupos:{},campeon:"",goleador:"",mvp:""};}}catch(e){}if(jugadores.length&&!jugadorActual)jugadorActual=jugadores[0].id;}
 function toast(m){const e=document.getElementById('toast');if(!e)return;e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),3000);}
 
-function agregarJugador(){const input=document.getElementById('nuevoJugador');if(!input)return;const nombre=input.value.trim();if(!nombre){toast("❌ Escribe un nombre");return;}if(jugadores.find(j=>j.nombre.toLowerCase()===nombre.toLowerCase())){toast("❌ Ya existe");return;}const id="j_"+Date.now();jugadores.push({id,nombre});apuestas[id]={grupos:{},clasif:{},especiales:{campeon:"",goleador:"",mvp:""},eliminatorias:{},cerrado:false};input.value="";jugadorActual=id;guardar();renderizarTodo();toast("✅ "+nombre+" añadido");}
+function agregarJugador(){
+  console.log('🟢 agregarJugador() llamado');
+  const input=document.getElementById('nuevoJugador');
+  if(!input){console.error('❌ Input no encontrado');return;}
+  const nombre=input.value.trim();
+  console.log('📝 Nombre:',nombre);
+  if(!nombre){toast("❌ Escribe un nombre");return;}
+  if(jugadores.find(j=>j.nombre.toLowerCase()===nombre.toLowerCase())){toast("❌ Ya existe");return;}
+  const id="j_"+Date.now();
+  jugadores.push({id,nombre});
+  apuestas[id]={grupos:{},clasif:{},especiales:{campeon:"",goleador:"",mvp:""},eliminatorias:{},cerrado:false};
+  input.value="";jugadorActual=id;guardar();renderizarTodo();toast("✅ "+nombre+" añadido");
+  console.log('✅ Jugador añadido:',nombre);
+}
 function eliminarJugador(id){if(!confirm("¿Eliminar?"))return;jugadores=jugadores.filter(j=>j.id!==id);delete apuestas[id];if(jugadorActual===id)jugadorActual=jugadores[0]?.id||null;guardar();renderizarTodo();toast("🗑 Eliminado");}
 function cambiarJugador(id){jugadorActual=id;renderizarTodo();}
 function cerrarApuestas(){if(!jugadorActual)return;if(!confirm("¿Cerrar?"))return;apuestas[jugadorActual].cerrado=true;guardar();renderizarTodo();toast("🔒 Cerradas");}
@@ -279,7 +292,7 @@ function guardarEspeciales(){resultadosReales.campeon=document.getElementById('r
 function importarApuestas(){const file=document.getElementById('importarArchivo').files[0];if(!file){toast("❌ Selecciona archivo");return;}const r=new FileReader();r.onload=function(e){try{const data=JSON.parse(e.target.result);if(!data.jugador||!data.apuestas){toast("❌ Inválido");return;}if(!jugadores.find(j=>j.id===data.jugador.id)){jugadores.push({id:data.jugador.id,nombre:data.jugador.nombre});}apuestas[data.jugador.id]=data.apuestas;guardar();renderizarTodo();toast(`✅ Importado`);}catch(err){toast("❌ Error");}};r.readAsText(file);}
 function exportarBackup(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({jugadores,apuestas,resultadosReales},null,2)],{type:'application/json'}));a.download=`backup_${new Date().toISOString().slice(0,10)}.json`;a.click();toast("💾 Backup");}
 
-async function enviarApuestas(){if(!jugadorActual){toast("❌ Selecciona un jugador");return;}const jugador=jugadores.find(j=>j.id===jugadorActual);const datos={version:"25.0",fecha:new Date().toISOString(),jugador:{id:jugador.id,nombre:jugador.nombre},apuestas:apuestas[jugadorActual]};const blob=new Blob([JSON.stringify(datos,null,2)],{type:'application/json'});const archivo=new File([blob],`quiniela_${jugador.nombre.replace(/\s+/g,'_')}.json`,{type:'application/json'});try{const fd=new FormData();fd.append('archivo',archivo);fd.append('nombre',jugador.nombre);const r=await fetch("https://formspree.io/f/xjglzeqd",{method:'POST',body:fd,headers:{'Accept':'application/json'}});if(r.ok){toast("✅ Enviado");}else throw new Error('Error');}catch(e){toast("❌ Error");}}
+async function enviarApuestas(){if(!jugadorActual){toast("❌ Selecciona un jugador");return;}const jugador=jugadores.find(j=>j.id===jugadorActual);const datos={version:"26.0",fecha:new Date().toISOString(),jugador:{id:jugador.id,nombre:jugador.nombre},apuestas:apuestas[jugadorActual]};const blob=new Blob([JSON.stringify(datos,null,2)],{type:'application/json'});const archivo=new File([blob],`quiniela_${jugador.nombre.replace(/\s+/g,'_')}.json`,{type:'application/json'});try{const fd=new FormData();fd.append('archivo',archivo);fd.append('nombre',jugador.nombre);const r=await fetch("https://formspree.io/f/xjglzeqd",{method:'POST',body:fd,headers:{'Accept':'application/json'}});if(r.ok){toast("✅ Enviado");}else throw new Error('Error');}catch(e){toast("❌ Error");}}
 
 function renderizarTodo(){renderJugadores();renderSelector();renderGrupoSelector();renderGrupos();renderClasificacion();renderEliminatorias();renderEspeciales();renderGrupoSelectorResultados();renderResultadosVivo();renderRanking();mostrarPuntaje();const opts=TODOS.map(e=>`<option ${resultadosReales.campeon===e?'selected':''} value="${e}">${e}</option>`).join('');document.getElementById('realCampeon').innerHTML='<option value="">Campeón</option>'+opts;document.getElementById('realGoleador').value=resultadosReales.goleador||'';document.getElementById('realMVP').value=resultadosReales.mvp||'';}
 function mostrarPanel(p){document.querySelectorAll('.panel').forEach(pa=>pa.classList.remove('active'));document.getElementById('panel-'+p).classList.add('active');}
@@ -289,24 +302,55 @@ window.setGrupoPronostico=setGrupoPronostico;window.cambiarGrupo=cambiarGrupo;wi
 window.setEliminatoria=setEliminatoria;window.setEspecial=setEspecial;window.cambiarGrupoResultados=cambiarGrupoResultados;
 window.cerrarApuestas=cerrarApuestas;
 
+// ============================================================
+// INICIALIZACIÓN CORREGIDA
+// ============================================================
 cargar();
-window.onload=function(){
-  const btnAgregar=document.getElementById('btnAgregar');
-  const inputJugador=document.getElementById('nuevoJugador');
-  if(btnAgregar){btnAgregar.onclick=function(e){e.preventDefault();agregarJugador();};}
-  if(inputJugador){inputJugador.onkeypress=function(e){if(e.key==='Enter'){e.preventDefault();agregarJugador();}};}
-  document.getElementById('btnCerrar').onclick=cerrarApuestas;
-  document.getElementById('btnGuardarEsp').onclick=guardarEspeciales;
-  document.getElementById('btnImportar').onclick=importarApuestas;
-  document.getElementById('btnExportarBackup').onclick=exportarBackup;
-  document.getElementById('btnRestaurarBackup').onclick=function(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(d.jugadores&&d.apuestas){if(confirm("¿Restaurar?")){jugadores=d.jugadores;apuestas=d.apuestas;resultadosReales=d.resultadosReales||{grupos:{},campeon:"",goleador:"",mvp:""};guardar();renderizarTodo();toast("✅ Restaurado");}}else{toast("❌ Inválido");}}catch(err){toast("❌ Error");}};r.readAsText(f);};inp.click();};
-  document.getElementById('btnEnviar').onclick=enviarApuestas;
-  document.getElementById('btnExportar').onclick=function(){if(!jugadorActual)return;const j=jugadores.find(j=>j.id===jugadorActual);const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({jugador:{id:j.id,nombre:j.nombre},apuestas:apuestas[jugadorActual]},null,2)],{type:'application/json'}));a.download=`quiniela_${j.nombre}.json`;a.click();toast("📤 Exportado");};
-  document.querySelectorAll('.tab').forEach(tab=>{tab.onclick=function(){const p=this.dataset.panel;if(p){mostrarPanel(p);document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');}};});
+
+function initApp(){
+  console.log('🚀 Inicializando app...');
+  
+  var btnAgregar=document.getElementById('btnAgregar');
+  var inputJugador=document.getElementById('nuevoJugador');
+  
+  console.log('btnAgregar encontrado:',!!btnAgregar);
+  console.log('inputJugador encontrado:',!!inputJugador);
+  
+  if(btnAgregar){
+    btnAgregar.onclick=function(e){e.preventDefault();console.log('🖱️ Click en Añadir');agregarJugador();};
+  }
+  if(inputJugador){
+    inputJugador.onkeypress=function(e){if(e.key==='Enter'){e.preventDefault();console.log('⌨️ Enter');agregarJugador();}};
+  }
+  
+  var btnCerrar=document.getElementById('btnCerrar');
+  var btnGuardarEsp=document.getElementById('btnGuardarEsp');
+  var btnImportar=document.getElementById('btnImportar');
+  var btnExportarBackup=document.getElementById('btnExportarBackup');
+  var btnRestaurarBackup=document.getElementById('btnRestaurarBackup');
+  var btnEnviar=document.getElementById('btnEnviar');
+  var btnExportar=document.getElementById('btnExportar');
+  
+  if(btnCerrar)btnCerrar.onclick=cerrarApuestas;
+  if(btnGuardarEsp)btnGuardarEsp.onclick=guardarEspeciales;
+  if(btnImportar)btnImportar.onclick=importarApuestas;
+  if(btnExportarBackup)btnExportarBackup.onclick=exportarBackup;
+  if(btnRestaurarBackup){btnRestaurarBackup.onclick=function(){var inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.jugadores&&d.apuestas){if(confirm("¿Restaurar backup?")){jugadores=d.jugadores;apuestas=d.apuestas;resultadosReales=d.resultadosReales||{grupos:{},campeon:"",goleador:"",mvp:""};guardar();renderizarTodo();toast("✅ Restaurado");}}else{toast("❌ Inválido");}}catch(err){toast("❌ Error");}};r.readAsText(f);};inp.click();};}
+  if(btnEnviar)btnEnviar.onclick=enviarApuestas;
+  if(btnExportar){btnExportar.onclick=function(){if(!jugadorActual)return;var j=jugadores.find(function(j){return j.id===jugadorActual;});var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({jugador:{id:j.id,nombre:j.nombre},apuestas:apuestas[jugadorActual]},null,2)],{type:'application/json'}));a.download='quiniela_'+j.nombre+'.json';a.click();toast("📤 Exportado");};}
+  
+  var tabs=document.querySelectorAll('.tab');
+  for(var i=0;i<tabs.length;i++){tabs[i].onclick=function(){var p=this.getAttribute('data-panel');if(p){mostrarPanel(p);var allTabs=document.querySelectorAll('.tab');for(var j=0;j<allTabs.length;j++){allTabs[j].classList.remove('active');}this.classList.add('active');}};}
+  
   renderizarTodo();
   if(!jugadorActual&&jugadores.length>0){jugadorActual=jugadores[0].id;renderizarTodo();}
-};
-setTimeout(function(){const btnAgregar=document.getElementById('btnAgregar');if(btnAgregar&&!btnAgregar.onclick){btnAgregar.onclick=function(e){e.preventDefault();agregarJugador();};document.getElementById('nuevoJugador').onkeypress=function(e){if(e.key==='Enter'){e.preventDefault();agregarJugador();}};}},500);
+  console.log('✅ App inicializada');
+}
+
+if(document.readyState==='complete'||document.readyState==='interactive'){setTimeout(initApp,100);}
+else{document.addEventListener('DOMContentLoaded',function(){setTimeout(initApp,100);});}
+
+setTimeout(function(){var btnAgregar=document.getElementById('btnAgregar');if(btnAgregar&&!btnAgregar.onclick){console.log('⚠️ Fallback: asignando onclick');btnAgregar.onclick=function(e){e.preventDefault();agregarJugador();};var inputJugador=document.getElementById('nuevoJugador');if(inputJugador){inputJugador.onkeypress=function(e){if(e.key==='Enter'){e.preventDefault();agregarJugador();}};}}},500);
 </script>
 </body>
 </html>
