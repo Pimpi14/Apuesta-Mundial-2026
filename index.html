@@ -1,176 +1,313 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Pro-Bracket Mundial 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #080d1a; --bg2: #0f1623; --card: #111827;
-            --border: #1e2d45; --accent: #00e5b8; --accent2: #f5c518;
-            --text: #eef2ff; --text2: #7b91b0;
-        }
-
-        body {
-            background: var(--bg); color: var(--text);
-            font-family: 'DM Sans', sans-serif; margin: 0; padding: 20px;
-        }
-
-        h1 { font-family: 'Bebas Neue', cursive; color: var(--accent); text-align: center; font-size: 3rem; }
-
-        .bracket-scroll {
-            display: flex; overflow-x: auto; gap: 30px; padding-bottom: 20px;
-            scroll-snap-type: x mandatory;
-        }
-
-        .round-column { min-width: 280px; flex: 1; }
-        .round-column h2 { 
-            text-align: center; font-family: 'Bebas Neue'; color: var(--accent2); 
-            border-bottom: 2px solid var(--border); padding-bottom: 10px;
-        }
-
-        .match-card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 12px; margin-bottom: 15px;
-            transition: transform 0.2s;
-        }
-
-        .match-card:hover { border-color: var(--accent); }
-
-        .match-id { font-size: 0.7rem; color: var(--text2); margin-bottom: 8px; display: block; }
-
-        .team-row {
-            display: flex; justify-content: space-between; align-items: center; margin: 5px 0;
-        }
-
-        .team-name { font-weight: 500; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
-
-        .inputs-group { display: flex; align-items: center; gap: 8px; }
-
-        input[type="number"] {
-            width: 45px; background: var(--bg2); border: 1px solid var(--border);
-            color: white; border-radius: 4px; padding: 4px; text-align: center;
-        }
-
-        input[type="radio"] { accent-color: var(--accent); cursor: pointer; }
-
-        .btn-update {
-            display: block; margin: 20px auto; padding: 10px 25px;
-            background: var(--accent); color: var(--bg); font-weight: bold;
-            border: none; border-radius: 5px; cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>⚽ Mundial 2026 – Quiniela Oficial</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#080d1a;--bg2:#0f1623;--card:#111827;
+    --border:#1e2d45;--accent:#00e5b8;--accent2:#f5c518;
+    --red:#ff4757;--text:#eef2ff;--text2:#7b91b0;
+    --locked:#ff6b6b;--auto-bg:#1a3a2a;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;padding:16px}
+  .container{max-width:1200px;margin:0 auto}
+  .header{text-align:center;margin-bottom:20px}
+  .header h1{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px}
+  .header h1 span{color:var(--accent)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;background:var(--bg);padding:8px 0}
+  .tab{background:var(--card);border:1px solid var(--border);padding:8px 14px;border-radius:30px;cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.3s}
+  .tab:hover{background:#1a2744}
+  .tab.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+  .panel{display:none}
+  .panel.active{display:block}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+  .card-title{font-size:18px;font-weight:700;color:var(--accent2);margin-bottom:12px}
+  .btn{background:var(--accent);border:none;padding:12px 20px;border-radius:30px;font-weight:700;cursor:pointer;width:100%;font-size:14px;margin-top:8px;color:#000;transition:all 0.3s}
+  .btn:hover{opacity:0.9;transform:translateY(-1px)}
+  .btn-danger{background:var(--red);color:white}
+  .btn-small{background:var(--accent);border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;font-size:12px;color:#000}
+  .btn-small:hover{opacity:0.9;transform:scale(1.05)}
+  .btn-auto{background:linear-gradient(135deg, #00e5b8 0%, #00c853 100%);border:none;padding:10px 20px;border-radius:25px;font-weight:700;cursor:pointer;font-size:13px;color:#000;margin:8px 0;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,229,184,0.3)}
+  .btn-auto:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,229,184,0.5)}
+  .btn-secondary{background:var(--bg2);border:1px solid var(--border);padding:12px 20px;border-radius:30px;font-weight:700;cursor:pointer;font-size:14px;margin-top:8px;color:var(--text);width:100%}
+  .jugador-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;background:var(--card);padding:12px;border-radius:16px}
+  .jugador-btn{background:transparent;border:1px solid var(--border);padding:8px 16px;border-radius:30px;cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.3s}
+  .jugador-btn:hover{background:#1a2744}
+  .jugador-btn.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+  .botones{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .apuesta-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:14px;color:var(--text2);transition:all 0.3s;font-weight:500}
+  .apuesta-btn:hover{background:#1a2744}
+  .apuesta-btn.selected-1{background:rgba(0,229,184,0.3);border-color:var(--accent);color:var(--accent);font-weight:700}
+  .apuesta-btn.selected-x{background:rgba(245,197,24,0.3);border-color:var(--accent2);color:var(--accent2);font-weight:700}
+  .apuesta-btn.selected-2{background:rgba(255,71,87,0.3);border-color:var(--red);color:var(--red);font-weight:700}
+  .vivo-resultado-boton{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:14px;color:var(--text2);transition:all 0.3s;font-weight:500}
+  .vivo-resultado-boton:hover{background:#1a2744}
+  .vivo-resultado-boton.active-1{background:rgba(0,229,184,0.3);border-color:var(--accent);color:var(--accent);font-weight:700}
+  .vivo-resultado-boton.active-x{background:rgba(245,197,24,0.3);border-color:var(--accent2);color:var(--accent2);font-weight:700}
+  .vivo-resultado-boton.active-2{background:rgba(255,71,87,0.3);border-color:var(--red);color:var(--red);font-weight:700}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+  .admin-input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:14px}
+  .admin-input:focus{outline:none;border-color:var(--accent)}
+  .admin-input.auto-filled{background:var(--auto-bg);border-color:var(--accent);color:var(--accent);font-weight:600}
+  .ranking-table{width:100%;border-collapse:collapse}
+  .ranking-table th,.ranking-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border)}
+  .ranking-table th{background:rgba(0,229,184,0.1);color:var(--accent);font-weight:700}
+  .pts-badge{background:rgba(0,229,184,0.2);padding:4px 12px;border-radius:20px;color:var(--accent);font-weight:700}
+  .flex-row{display:flex;gap:12px;flex-wrap:wrap}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--accent);border-radius:30px;padding:10px 20px;font-size:14px;z-index:1000;transition:transform 0.3s;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .puntaje-vivo{background:rgba(0,229,184,0.1);border-radius:12px;padding:12px 20px;text-align:center;margin-bottom:16px;border:1px solid rgba(0,229,184,0.2)}
+  .puntaje-vivo span{font-size:28px;font-weight:700;color:var(--accent)}
+  .partido-item{margin:10px 0;padding:12px;background:var(--bg2);border-radius:10px;border-left:3px solid var(--accent)}
+  .partido-header{font-size:11px;color:var(--accent2);margin-bottom:4px}
+  .clasif-fila{display:flex;gap:8px;margin:8px 0;align-items:center;flex-wrap:wrap}
+  .file-input{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;width:100%;margin-bottom:12px;color:var(--text)}
+  .grupo-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+  .grupo-tab{background:var(--bg2);border:1px solid var(--border);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:12px;color:var(--text2)}
+  .grupo-tab.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
+  .eliminatoria-card{background:linear-gradient(135deg, #1a2744 0%, #2a3a5c 100%);border:2px solid var(--accent2);border-radius:12px;padding:16px;margin:10px 0}
+  .fase-titulo{color:var(--accent);font-size:16px;font-weight:700;margin-bottom:12px}
+  .equipo-input{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:13px;width:100%;margin:4px 0}
+  .equipo-input:focus{outline:none;border-color:var(--accent)}
+  .equipo-input.predicho{background:var(--auto-bg);border-color:var(--accent);color:var(--accent);font-weight:500}
+  .tercero-checkbox{margin-right:8px;cursor:pointer}
+  .tercero-item{display:flex;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;margin:4px 0;cursor:pointer;transition:all 0.3s;border:1px solid transparent}
+  .tercero-item:hover:not(.locked){background:#1a2744}
+  .tercero-item.selected{background:rgba(0,229,184,0.2);border:1px solid var(--accent)}
+  .tercero-item.locked{background:#1a1a2e;border:1px solid var(--locked);cursor:not-allowed;opacity:0.6}
+  .locked-badge{font-size:10px;background:var(--locked);color:white;padding:2px 6px;border-radius:10px;margin-left:6px}
+  .info-text{font-size:12px;color:var(--text2);margin-bottom:12px;padding:8px;background:rgba(255,107,107,0.1);border-left:3px solid var(--locked);border-radius:4px}
+  .info-success{font-size:12px;color:var(--accent);margin-bottom:12px;padding:8px;background:rgba(0,229,184,0.1);border-left:3px solid var(--accent);border-radius:4px}
+  .fecha-titulo{color:var(--accent);font-size:14px;font-weight:600;margin:16px 0 8px 0;padding:8px;background:rgba(0,229,184,0.05);border-radius:8px}
+  .zona-horaria{font-size:11px;color:var(--text2);font-weight:normal}
+  .resumen-seleccion{margin-top:12px;padding:10px;background:rgba(0,229,184,0.05);border-radius:8px;font-size:13px}
+  @media(max-width:600px){.grid-2,.grid-3{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
+<div class="container">
+  <div class="header">
+    <h1>⚽ MUNDIAL <span>2026</span></h1>
+    <p>Quiniela oficial · 11 junio – 19 julio 2026</p>
+  </div>
 
-    <h1>⚽ WORLD CUP 2026 BRACKET ENGINE</h1>
+  <div class="tabs">
+    <button class="tab active" data-panel="jugadores">👥 Jugadores</button>
+    <button class="tab" data-panel="apuestas">📝 Mis Apuestas</button>
+    <button class="tab" data-panel="resultados">🎯 Resultados en vivo</button>
+    <button class="tab" data-panel="admin">🔧 Admin</button>
+    <button class="tab" data-panel="ranking">📊 Ranking</button>
+    <button class="tab" data-panel="puntuacion">📋 Puntuación</button>
+  </div>
 
-    <div class="bracket-scroll" id="main-bracket">
-        </div>
+  <!-- PANEL JUGADORES -->
+  <div id="panel-jugadores" class="panel active">
+    <div class="card">
+      <div class="card-title">👥 Gestión de jugadores</div>
+      <div class="flex-row">
+        <input type="text" id="nuevoJugador" class="admin-input" placeholder="Nombre del amigo" style="flex:2">
+        <button class="btn-small" id="btnAgregar" style="flex:0 0 auto;padding:10px 20px;font-size:14px">➕ Añadir</button>
+      </div>
+    </div>
+    <div id="listaJugadores"></div>
+  </div>
 
-    <script>
-        // CONFIGURACIÓN TÉCNICA DE CRUCES (OFICIAL FIFA 2026)
-        const CONFIG = {
-            r32: [
-                { id: 65, h: "1A", a: "3C/E/F/H/I/J" }, { id: 66, h: "2A", a: "2B" },
-                { id: 67, h: "1B", a: "3A/C/D/F/G/I" }, { id: 68, h: "1C", a: "3A/B/D/E/G/H" },
-                { id: 69, h: "2C", a: "2D" },             { id: 70, h: "1D", a: "3B/E/F/G/I/J" },
-                { id: 71, h: "1E", a: "3A/B/C/D/F/G" }, { id: 72, h: "1F", a: "2E" },
-                { id: 73, h: "1G", a: "3A/B/C/E/H/I" }, { id: 74, h: "1H", a: "2G" },
-                { id: 75, h: "1I", a: "3C/D/E/G/H/J" }, { id: 76, h: "1J", a: "2I" },
-                { id: 77, h: "1K", a: "3D/E/F/G/H/I" }, { id: 78, h: "2K", a: "2L" },
-                { id: 79, h: "1L", a: "3E/F/G/H/I/J" }, { id: 80, h: "2F", a: "2H" }
-            ],
-            progresion: {
-                65: [81, 'h'], 66: [81, 'a'], 67: [82, 'h'], 68: [82, 'a'],
-                81: [89, 'h'], 82: [89, 'a'], 89: [93, 'h'], 93: [95, 'h']
-                // Nota: Por brevedad en el ejemplo, se mapean las primeras ramas. 
-                // Se debe completar el mapa para los 95 partidos.
-            }
-        };
+  <!-- PANEL APUESTAS -->
+  <div id="panel-apuestas" class="panel">
+    <div id="selectorJugador" class="jugador-selector"></div>
+    <div id="puntajeVivo" class="puntaje-vivo" style="display:none">🏆 <strong>TUS PUNTOS:</strong> <span id="puntosVivo">0</span> pts</div>
+    
+    <div class="card">
+      <div class="card-title">🗓 FASE DE GRUPOS (3 pts por acierto) <span class="zona-horaria">· Horario España (CEST)</span></div>
+      <div class="grupo-tabs" id="grupoSelector"></div>
+      <div id="gruposContent"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">📋 CLASIFICACIÓN (1º y 2º de cada grupo) - 2 pts por equipo</div>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:12px">Los equipos seleccionados como 1º o 2º <strong style="color:var(--locked)">NO podrán ser elegidos como mejores terceros</strong></p>
+      <div id="clasifContent"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">🎯 MEJORES 8 TERCEROS (2 pts por acierto)</div>
+      <div class="info-text">⚠️ <strong>Importante:</strong> Los equipos seleccionados como 1º o 2º están <strong>bloqueados</strong>.</div>
+      <div id="mejoresTercerosContent"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">🏆 ELIMINATORIAS (Puntuación progresiva) <span class="zona-horaria">· Horario España (CEST)</span></div>
+      <button class="btn-auto" id="btnAutocompletar">🤖 AUTORELLENAR ELIMINATORIAS CON MIS PREDICCIONES</button>
+      <div class="info-success" id="prediccionInfo" style="display:none">✅ Eliminatorias rellenadas automáticamente con tus clasificados y mejores terceros.</div>
+      <div id="eliminatoriasContent"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">⭐ ESPECIALES</div>
+      <div id="especialesContent"></div>
+    </div>
+    
+    <div class="flex-row">
+      <button class="btn" id="btnExportar">📤 EXPORTAR MIS APUESTAS</button>
+      <button class="btn btn-danger" id="btnCerrar">🔒 CERRAR APUESTAS</button>
+    </div>
+  </div>
 
-        // Generar mapa completo de progresión (81-95)
-        for(let i=69, j=83; i<=80; i+=2, j++){
-            CONFIG.progresion[i] = [j, 'h']; CONFIG.progresion[i+1] = [j, 'a'];
-        }
-        for(let i=83, j=90; i<=88; i+=2, j++){
-            CONFIG.progresion[i] = [j, 'h']; CONFIG.progresion[i+1] = [j, 'a'];
-        }
-        CONFIG.progresion[91] = [94, 'h']; CONFIG.progresion[92] = [94, 'a'];
-        CONFIG.progresion[94] = [95, 'a'];
+  <!-- PANEL RESULTADOS EN VIVO -->
+  <div id="panel-resultados" class="panel">
+    <div class="card">
+      <div class="card-title">🎯 RESULTADOS REALES - Fase de grupos <span class="zona-horaria">· Horario España (CEST)</span></div>
+      <div class="grupo-tabs" id="grupoSelectorResultados"></div>
+      <div id="resultadosVivoContent"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎯 MEJORES 8 TERCEROS REALES</div>
+      <div id="mejoresTercerosRealesContent"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 RESULTADOS REALES - Eliminatorias</div>
+      <div id="resultadosEliminatoriasContent"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⭐ ESPECIALES REALES</div>
+      <div class="flex-row">
+        <select id="realCampeonVivo" class="admin-input" style="flex:1"><option value="">-- Campeón --</option></select>
+        <input id="realGoleadorVivo" class="admin-input" placeholder="Goleador" style="flex:1">
+        <input id="realPorteroVivo" class="admin-input" placeholder="Portero" style="flex:1">
+      </div>
+      <button class="btn" id="btnGuardarEspVivo">💾 Guardar especiales</button>
+    </div>
+  </div>
 
-        function renderBracket() {
-            const container = document.getElementById('main-bracket');
-            const rounds = [
-                { name: "Dieciseisavos", id: "r32", count: 16, start: 65 },
-                { name: "Octavos", id: "r16", count: 8, start: 81 },
-                { name: "Cuartos", id: "r8", count: 4, start: 89 },
-                { name: "Semis", id: "r4", count: 2, start: 93 },
-                { name: "Final", id: "r2", count: 1, start: 95 }
-            ];
+  <!-- PANEL ADMIN -->
+  <div id="panel-admin" class="panel">
+    <div class="card">
+      <div class="card-title">📦 IMPORTAR APUESTAS</div>
+      <input type="file" id="importarArchivo" accept=".json" class="file-input">
+      <button class="btn" id="btnImportar">📂 Importar apuesta de un jugador</button>
+    </div>
+    <div class="card">
+      <div class="card-title">⭐ ESPECIALES REALES</div>
+      <div class="flex-row">
+        <select id="realCampeonAdmin" class="admin-input" style="flex:1"><option value="">-- Campeón --</option></select>
+        <input id="realGoleadorAdmin" class="admin-input" placeholder="Goleador" style="flex:1">
+        <input id="realPorteroAdmin" class="admin-input" placeholder="Portero" style="flex:1">
+      </div>
+      <button class="btn" id="btnGuardarEspAdmin">💾 Guardar especiales</button>
+    </div>
+    <div class="card">
+      <div class="card-title">💾 RESPALDO</div>
+      <div class="flex-row">
+        <button class="btn" id="btnExportarBackup" style="flex:1">💾 Exportar backup</button>
+        <button class="btn btn-secondary" id="btnRestaurarBackup" style="flex:1">📥 Restaurar backup</button>
+      </div>
+    </div>
+  </div>
 
-            rounds.forEach(round => {
-                const col = document.createElement('div');
-                col.className = 'round-column';
-                col.innerHTML = `<h2>${round.name}</h2>`;
-                
-                for (let i = 0; i < round.count; i++) {
-                    const matchId = round.start + i;
-                    const isR32 = round.id === 'r32';
-                    const labelH = isR32 ? CONFIG.r32[i].h : `Ganador ${matchId}`; // Simplificado
-                    const labelA = isR32 ? CONFIG.r32[i].a : `Ganador ${matchId}`;
+  <!-- PANEL RANKING -->
+  <div id="panel-ranking" class="panel">
+    <div class="card">
+      <div class="card-title">🏆 CLASIFICACIÓN GENERAL</div>
+      <button class="btn-small" id="btnPDF" style="margin-bottom:12px">📄 Descargar PDF</button>
+      <div id="rankingTabla"></div>
+    </div>
+  </div>
 
-                    col.innerHTML += `
-                        <div class="match-card" id="match-${matchId}">
-                            <span class="match-id">PARTIDO ${matchId}</span>
-                            <div class="team-row">
-                                <span class="team-name" id="t-${matchId}-h-name">${labelH}</span>
-                                <div class="inputs-group">
-                                    <input type="radio" name="p-${matchId}" id="p-${matchId}-h">
-                                    <input type="number" id="s-${matchId}-h" onchange="promover(${matchId})">
-                                </div>
-                            </div>
-                            <div class="team-row">
-                                <span class="team-name" id="t-${matchId}-a-name">${labelA}</span>
-                                <div class="inputs-group">
-                                    <input type="radio" name="p-${matchId}" id="p-${matchId}-a">
-                                    <input type="number" id="s-${matchId}-a" onchange="promover(${matchId})">
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-                container.appendChild(col);
-            });
-        }
+  <!-- PANEL PUNTUACION -->
+  <div id="panel-puntuacion" class="panel">
+    <div class="card">
+      <div class="card-title">📋 SISTEMA DE PUNTUACIÓN</div>
+      <table style="width:100%">
+        <tr style="background:rgba(0,229,184,0.1)"><th>Categoría</th><th>Puntos</th></tr>
+        <tr><td>1X2 Fase grupos</td><td><strong style="color:var(--accent)">3 pts</strong> por acierto</td></tr>
+        <tr><td>Clasificación (1º y 2º)</td><td><strong style="color:var(--accent)">2 pts</strong> por equipo</td></tr>
+        <tr><td>Mejores 8 terceros</td><td><strong style="color:var(--accent)">2 pts</strong> por equipo</td></tr>
+        <tr><td>🏆 Campeón</td><td><strong style="color:var(--accent)">15 pts</strong></td></tr>
+        <tr><td>⚽ Máximo goleador</td><td><strong style="color:var(--accent)">10 pts</strong></td></tr>
+        <tr><td>🧤 Portero menos goleado</td><td><strong style="color:var(--accent)">10 pts</strong></td></tr>
+        <tr style="background:rgba(245,197,24,0.1)"><td colspan="2"><strong style="color:var(--accent2)">ELIMINATORIAS:</strong></td></tr>
+        <tr><td>Dieciseisavos</td><td><strong style="color:var(--accent)">5 pts</strong></td></tr>
+        <tr><td>Octavos</td><td><strong style="color:var(--accent)">7 pts</strong></td></tr>
+        <tr><td>Cuartos</td><td><strong style="color:var(--accent)">10 pts</strong></td></tr>
+        <tr><td>Semifinales</td><td><strong style="color:var(--accent)">12 pts</strong></td></tr>
+        <tr><td>Tercer puesto</td><td><strong style="color:var(--accent)">10 pts</strong></td></tr>
+        <tr><td>Final</td><td><strong style="color:var(--accent)">15 pts</strong></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
 
-        function promover(id) {
-            const sH = parseInt(document.getElementById(`s-${id}-h`).value || 0);
-            const sA = parseInt(document.getElementById(`s-${id}-a`).value || 0);
-            const nH = document.getElementById(`t-${id}-h-name`).innerText;
-            const nA = document.getElementById(`t-${id}-a-name`).innerText;
-            
-            let ganador = "";
-            if (sH > sA) ganador = nH;
-            else if (sA > sH) ganador = nA;
-            else {
-                const rH = document.getElementById(`p-${id}-h`).checked;
-                ganador = rH ? nH : nA;
-            }
+<script>
+// ============================================================
+// DATOS
+// ============================================================
+const GRUPOS = {
+  A:["🇲🇽 México","🇿🇦 Sudáfrica","🇰🇷 Corea del Sur","🇨🇿 Chequia"],
+  B:["🇨🇦 Canadá","🇧🇦 Bosnia","🇶🇦 Qatar","🇨🇭 Suiza"],
+  C:["🇧🇷 Brasil","🇲🇦 Marruecos","🇭🇹 Haití","🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia"],
+  D:["🇺🇸 USA","🇵🇾 Paraguay","🇦🇺 Australia","🇹🇷 Turquía"],
+  E:["🇩🇪 Alemania","🇨🇼 Curazao","🇨🇮 Costa de Marfil","🇪🇨 Ecuador"],
+  F:["🇳🇱 Países Bajos","🇯🇵 Japón","🇸🇪 Suecia","🇹🇳 Túnez"],
+  G:["🇧🇪 Bélgica","🇪🇬 Egipto","🇮🇷 Irán","🇳🇿 Nueva Zelanda"],
+  H:["🇪🇸 España","🇨🇻 Cabo Verde","🇸🇦 Arabia Saudí","🇺🇾 Uruguay"],
+  I:["🇫🇷 Francia","🇸🇳 Senegal","🇮🇶 Irak","🇳🇴 Noruega"],
+  J:["🇦🇷 Argentina","🇩🇿 Argelia","🇦🇹 Austria","🇯🇴 Jordania"],
+  K:["🇵🇹 Portugal","🇨🇩 Congo DR","🇺🇿 Uzbekistán","🇨🇴 Colombia"],
+  L:["🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra","🇭🇷 Croacia","🇬🇭 Ghana","🇵🇦 Panamá"]
+};
+const TODOS_EQUIPOS = [...new Set(Object.values(GRUPOS).flat())].sort();
 
-            const pro = CONFIG.progresion[id];
-            if (pro) {
-                const [nextId, side] = pro;
-                const target = document.getElementById(`t-${nextId}-${side}-name`);
-                if (target) {
-                    target.innerText = ganador;
-                    target.style.color = "var(--accent)";
-                }
-            }
-        }
-
-        window.onload = renderBracket;
-    </script>
-</body>
-</html>
+// Partidos con horario España (CEST = Perú +7h)
+const PARTIDOS_CRONOLOGICOS = [
+  {id:1, grupo:"A", local:"🇲🇽 México", visitante:"🇿🇦 Sudáfrica", fecha:"Jue 11 jun", hora:"21:00"},
+  {id:2, grupo:"A", local:"🇰🇷 Corea del Sur", visitante:"🇨🇿 Chequia", fecha:"Vie 12 jun", hora:"04:00 (+1)"},
+  {id:3, grupo:"B", local:"🇨🇦 Canadá", visitante:"🇧🇦 Bosnia", fecha:"Vie 12 jun", hora:"21:00"},
+  {id:4, grupo:"D", local:"🇺🇸 USA", visitante:"🇵🇾 Paraguay", fecha:"Sáb 13 jun", hora:"03:00 (+1)"},
+  {id:5, grupo:"D", local:"🇦🇺 Australia", visitante:"🇹🇷 Turquía", fecha:"Sáb 13 jun", hora:"06:00 (+1)"},
+  {id:6, grupo:"B", local:"🇶🇦 Qatar", visitante:"🇨🇭 Suiza", fecha:"Sáb 13 jun", hora:"21:00"},
+  {id:7, grupo:"C", local:"🇧🇷 Brasil", visitante:"🇲🇦 Marruecos", fecha:"Dom 14 jun", hora:"00:00 (+1)"},
+  {id:8, grupo:"C", local:"🇭🇹 Haití", visitante:"🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia", fecha:"Dom 14 jun", hora:"03:00 (+1)"},
+  {id:9, grupo:"E", local:"🇩🇪 Alemania", visitante:"🇨🇼 Curazao", fecha:"Dom 14 jun", hora:"19:00"},
+  {id:10, grupo:"F", local:"🇳🇱 Países Bajos", visitante:"🇯🇵 Japón", fecha:"Dom 14 jun", hora:"22:00"},
+  {id:11, grupo:"E", local:"🇨🇮 Costa de Marfil", visitante:"🇪🇨 Ecuador", fecha:"Lun 15 jun", hora:"01:00 (+1)"},
+  {id:12, grupo:"F", local:"🇸🇪 Suecia", visitante:"🇹🇳 Túnez", fecha:"Lun 15 jun", hora:"04:00 (+1)"},
+  {id:13, grupo:"H", local:"🇪🇸 España", visitante:"🇨🇻 Cabo Verde", fecha:"Lun 15 jun", hora:"18:00"},
+  {id:14, grupo:"G", local:"🇧🇪 Bélgica", visitante:"🇪🇬 Egipto", fecha:"Lun 15 jun", hora:"21:00"},
+  {id:15, grupo:"H", local:"🇸🇦 Arabia Saudí", visitante:"🇺🇾 Uruguay", fecha:"Mar 16 jun", hora:"00:00 (+1)"},
+  {id:16, grupo:"G", local:"🇮🇷 Irán", visitante:"🇳🇿 Nueva Zelanda", fecha:"Mar 16 jun", hora:"03:00 (+1)"},
+  {id:17, grupo:"J", local:"🇦🇹 Austria", visitante:"🇯🇴 Jordania", fecha:"Mar 16 jun", hora:"06:00 (+1)"},
+  {id:18, grupo:"I", local:"🇫🇷 Francia", visitante:"🇸🇳 Senegal", fecha:"Mar 16 jun", hora:"21:00"},
+  {id:19, grupo:"I", local:"🇮🇶 Irak", visitante:"🇳🇴 Noruega", fecha:"Mié 17 jun", hora:"00:00 (+1)"},
+  {id:20, grupo:"J", local:"🇦🇷 Argentina", visitante:"🇩🇿 Argelia", fecha:"Mié 17 jun", hora:"03:00 (+1)"},
+  {id:21, grupo:"K", local:"🇵🇹 Portugal", visitante:"🇨🇩 Congo DR", fecha:"Mié 17 jun", hora:"19:00"},
+  {id:22, grupo:"L", local:"🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra", visitante:"🇭🇷 Croacia", fecha:"Mié 17 jun", hora:"22:00"},
+  {id:23, grupo:"L", local:"🇬🇭 Ghana", visitante:"🇵🇦 Panamá", fecha:"Jue 18 jun", hora:"01:00 (+1)"},
+  {id:24, grupo:"K", local:"🇺🇿 Uzbekistán", visitante:"🇨🇴 Colombia", fecha:"Jue 18 jun", hora:"04:00 (+1)"},
+  {id:25, grupo:"A", local:"🇨🇿 Chequia", visitante:"🇿🇦 Sudáfrica", fecha:"Jue 18 jun", hora:"18:00"},
+  {id:26, grupo:"B", local:"🇨🇭 Suiza", visitante:"🇧🇦 Bosnia", fecha:"Jue 18 jun", hora:"21:00"},
+  {id:27, grupo:"B", local:"🇨🇦 Canadá", visitante:"🇶🇦 Qatar", fecha:"Vie 19 jun", hora:"00:00 (+1)"},
+  {id:28, grupo:"A", local:"🇲🇽 México", visitante:"🇰🇷 Corea del Sur", fecha:"Vie 19 jun", hora:"03:00 (+1)"},
+  {id:29, grupo:"D", local:"🇹🇷 Turquía", visitante:"🇵🇾 Paraguay", fecha:"Vie 19 jun", hora:"06:00 (+1)"},
+  {id:30, grupo:"D", local:"🇺🇸 USA", visitante:"🇦🇺 Australia", fecha:"Vie 19 jun", hora:"21:00"},
+  {id:31, grupo:"C", local:"🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escocia", visitante:"🇲🇦 Marruecos", fecha:"Sáb 20 jun", hora:"00:00 (+1)"},
+  {id:32, grupo:"C", local:"🇧🇷 Brasil", visitante:"🇭🇹 Haití", fecha:"Sáb 20 jun", hora:"03:00 (+1)"},
+  {id:33, grupo:"F", local:"🇹🇳 Túnez", visitante:"🇯🇵 Japón", fecha:"Sáb 20 jun", hora:"06:00 (+1)"},
+  {id:34, grupo:"F", local:"🇳🇱 Países Bajos", visitante:"🇸🇪 Suecia", fecha:"Sáb 20 jun", hora:"19:00"},
+  {id:35, grupo:"E", local:"🇩🇪 Alemania", visitante:"🇨🇮 Costa de Marfil", fecha:"Sáb 20 jun", hora:"22:00"},
+  {id:36, grupo:"E", local:"🇪🇨 Ecuador", visitante:"🇨🇼 Curazao", fecha:"Dom 21 jun", hora:"02:00 (+1)"},
+  {id:37, grupo:"H", local:"🇪🇸 España", visitante:"🇸🇦 Arabia Saudí", fecha:"Dom 21 jun", hora:"18:00"},
+  {id:38, grupo:"G", local:"🇧🇪 Bélgica", visitante:"🇮🇷 Irán", fecha:"Dom 21 jun", hora:"21:00"},
+  {id:39, grupo:"H", local:"🇺🇾 Uruguay", visitante:"🇨🇻 Cabo Verde", fecha:"Lun 22 jun", hora:"00:00 (+1)"},
+  {id:40, grupo:"G", local:"🇳🇿 Nueva Zelanda", visitante:"🇪🇬 Egipto", fecha:"Lun 22 jun", hora:"03:00 (+1)"},
+  {id:41, grupo:"J", local:"🇦🇷 Argentina", visitante:"🇦🇹 Austria", fecha:"Lun 22 jun", hora:"19:00"},
+  {id:42, grupo:"I", local:"🇫🇷 Francia", visitante:"🇮🇶 Irak", fecha:"Lun 22 jun", hora:"23:00"},
+  {id:43, grupo:"I", local:"🇳🇴 Noruega", visitante:"🇸🇳 Senegal", fecha:"Mar 23 jun", hora:"02:00 (+1)"},
+  {id:44, grupo:"J", local:"🇯🇴 Jordania", visitante:"🇩🇿 Argelia", fecha:"Mar 23 jun", hora:"05:00 (+1)"},
+  {id:45, grupo:"K", local:"🇵🇹 Portugal",
