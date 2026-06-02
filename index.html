@@ -316,6 +316,7 @@ function setClasificacionReal(grupo, pos, equipo) {
   renderClasificacionReal();
   autoActualizarEliminatoriasReales();
   renderRanking(); 
+  mostrarPuntaje(); // Recalcular puntos vivos en pantalla
 }
 
 function renderClasificacionReal() {
@@ -351,19 +352,38 @@ function autoActualizarEliminatoriasReales() {
   if (!resultadosReales.eliminatorias) resultadosReales.eliminatorias = {};
   if (!resultadosReales.eliminatorias.dieciseisavos) resultadosReales.eliminatorias.dieciseisavos = {};
   const bets = resultadosReales.eliminatorias;
+  let cambiosPropagacion = [];
 
   ELIMINATORIAS.dieciseisavos.forEach(p => {
     if (!bets.dieciseisavos[p.id]) bets.dieciseisavos[p.id] = {};
     if (p.g && p.g.length === 2) {
       const cl = p.g[0], cv = p.g[1];
-      if (cl.startsWith('1')) { const eq = clasif[cl[1]]?.primero; if (eq) bets.dieciseisavos[p.id].local = eq; }
-      else if (cl.startsWith('2')) { const eq = clasif[cl[1]]?.segundo; if (eq) bets.dieciseisavos[p.id].local = eq; }
+      let nuevoLocal = "", nuevoVisitante = "";
 
-      if (cv.startsWith('1')) { const eq = clasif[cv[1]]?.primero; if (eq) bets.dieciseisavos[p.id].visitante = eq; }
-      else if (cv.startsWith('2')) { const eq = clasif[cv[1]]?.segundo; if (eq) bets.dieciseisavos[p.id].visitante = eq; }
+      if (cl.startsWith('1')) { nuevoLocal = clasif[cl[1]]?.primero || ""; }
+      else if (cl.startsWith('2')) { nuevoLocal = clasif[cl[1]]?.segundo || ""; }
+
+      if (cv.startsWith('1')) { nuevoVisitante = clasif[cv[1]]?.primero || ""; }
+      else if (cv.startsWith('2')) { nuevoVisitante = clasif[cv[1]]?.segundo || ""; }
+
+      if(bets.dieciseisavos[p.id].local !== nuevoLocal) {
+          bets.dieciseisavos[p.id].local = nuevoLocal;
+          cambiosPropagacion.push(p.id);
+      }
+      if(bets.dieciseisavos[p.id].visitante !== nuevoVisitante) {
+          bets.dieciseisavos[p.id].visitante = nuevoVisitante;
+          if(!cambiosPropagacion.includes(p.id)) cambiosPropagacion.push(p.id);
+      }
     }
   });
+  
   guardar();
+
+  // Limpiar arrastres si hubo cambios en los grupos
+  cambiosPropagacion.forEach(pid => {
+      propagarResultadosReales('dieciseisavos', pid);
+  });
+
   renderResultadosEliminatorias();
   renderRanking();
 }
@@ -451,13 +471,13 @@ function propagarDesde(fase,pid){
           if(p.p){
             const perdedor1=getPerdedor(p.r[0].f,p.r[0].id,bets);
             const perdedor2=getPerdedor(p.r[1].f,p.r[1].id,bets);
-            if(perdedor1){bets[fd][p.id].local=perdedor1;cambios=true;}
-            if(perdedor2){bets[fd][p.id].visitante=perdedor2;cambios=true;}
+            if(bets[fd][p.id].local !== perdedor1) { bets[fd][p.id].local = perdedor1 || ""; cambios = true; }
+            if(bets[fd][p.id].visitante !== perdedor2) { bets[fd][p.id].visitante = perdedor2 || ""; cambios = true; }
           }else{
             const e1=getGanador(p.r[0].f,p.r[0].id,bets);
             const e2=getGanador(p.r[1].f,p.r[1].id,bets);
-            if(e1){bets[fd][p.id].local=e1;cambios=true;}
-            if(e2){bets[fd][p.id].visitante=e2;cambios=true;}
+            if(bets[fd][p.id].local !== e1) { bets[fd][p.id].local = e1 || ""; cambios = true; }
+            if(bets[fd][p.id].visitante !== e2) { bets[fd][p.id].visitante = e2 || ""; cambios = true; }
           }
         }
       }
@@ -522,7 +542,45 @@ function renderEliminatorias(){
 function setEspecial(campo,valor){if(!jugadorActual||apuestas[jugadorActual]?.cerrado)return;apuestas[jugadorActual].especiales[campo]=valor;guardar();renderEspeciales();}
 function renderEspeciales(){const c=document.getElementById('especialesContent');if(!jugadorActual){c.innerHTML='<p style="color:var(--text2)">Selecciona tu nombre</p>';return;}const cerrado=apuestas[jugadorActual]?.cerrado;const esp=apuestas[jugadorActual]?.especiales||{};c.innerHTML=`<div class="grid-2"><div class="card"><div class="card-title">🏆 Campeón (15 pts)</div><select class="admin-input" id="espCampeon" ${cerrado?'disabled':''}><option value="">Seleccionar</option>${TODOS.map(e=>`<option ${esp.campeon===e?'selected':''} value="${e}">${e}</option>`).join('')}</select></div><div class="card"><div class="card-title">⚽ Goleador (10 pts)</div><input class="admin-input" id="espGoleador" value="${esp.goleador||''}" ${cerrado?'disabled':''} placeholder="Nombre"></div><div class="card"><div class="card-title">🏆 MVP del Mundial (10 pts)</div><input class="admin-input" id="espMVP" value="${esp.mvp||''}" ${cerrado?'disabled':''} placeholder="Nombre del MVP"></div></div>`;if(!cerrado)setTimeout(()=>{document.getElementById('espCampeon').onchange=e=>setEspecial('campeon',e.target.value);document.getElementById('espGoleador').onchange=e=>setEspecial('goleador',e.target.value);document.getElementById('espMVP').onchange=e=>setEspecial('mvp',e.target.value);},0);}
 
-function calcularPuntos(pid){let pts=0;const b=apuestas[pid];if(!b)return 0;for(const[id,pr]of Object.entries(b.grupos||{})){if(resultadosReales.grupos[id]&&pr===resultadosReales.grupos[id])pts+=3;}if(resultadosReales.clasificacion)for(const[g,cl]of Object.entries(b.clasif||{})){const r=resultadosReales.clasificacion[g];if(r){if(cl.primero===r.primero)pts+=2;if(cl.segundo===r.segundo)pts+=2;if(cl.tercero===r.tercero)pts+=2;}}const punt={dieciseisavos:{eq:3,x12:2},octavos:{eq:4,x12:3},cuartos:{eq:6,x12:4},semifinales:{eq:7,x12:5},tercerPuesto:{eq:6,x12:4},final:{eq:10,x12:5}};if(b.eliminatorias&&resultadosReales.eliminatorias)for(const[f,pt]of Object.entries(punt))for(const[id,ap]of Object.entries(b.eliminatorias[f]||{})){const r=resultadosReales.eliminatorias[f]?.[id]||{};if(ap.local&&r.local&&ap.local===r.local)pts+=pt.eq;if(ap.visitante&&r.visitante&&ap.visitante===r.visitante)pts+=pt.eq;if(ap.resultado&&r.resultado&&ap.resultado===r.resultado)pts+=pt.x12;}const e=b.especiales||{};if(e.campeon&&e.campeon===resultadosReales.campeon)pts+=15;if(e.goleador&&e.goleador.toLowerCase().trim()===(resultadosReales.goleador||'').toLowerCase().trim())pts+=10;if(e.mvp&&e.mvp.toLowerCase().trim()===(resultadosReales.mvp||'').toLowerCase().trim())pts+=10;return pts;}
+function calcularPuntos(pid){
+  let pts=0;
+  const b=apuestas[pid];
+  if(!b)return 0;
+  
+  for(const[id,pr]of Object.entries(b.grupos||{})){
+    if(pr && resultadosReales.grupos[id] && pr===resultadosReales.grupos[id])pts+=3;
+  }
+  
+  if(resultadosReales.clasificacion){
+    for(const[g,cl]of Object.entries(b.clasif||{})){
+      const r=resultadosReales.clasificacion[g];
+      if(r){
+        if(cl.primero && r.primero && cl.primero===r.primero)pts+=2;
+        if(cl.segundo && r.segundo && cl.segundo===r.segundo)pts+=2;
+        if(cl.tercero && r.tercero && cl.tercero===r.tercero)pts+=2;
+      }
+    }
+  }
+  
+  const punt={dieciseisavos:{eq:3,x12:2},octavos:{eq:4,x12:3},cuartos:{eq:6,x12:4},semifinales:{eq:7,x12:5},tercerPuesto:{eq:6,x12:4},final:{eq:10,x12:5}};
+  if(b.eliminatorias&&resultadosReales.eliminatorias){
+    for(const[f,pt]of Object.entries(punt)){
+      for(const[id,ap]of Object.entries(b.eliminatorias[f]||{})){
+        const r=resultadosReales.eliminatorias[f]?.[id]||{};
+        if(ap.local && r.local && ap.local===r.local)pts+=pt.eq;
+        if(ap.visitante && r.visitante && ap.visitante===r.visitante)pts+=pt.eq;
+        if(ap.resultado && r.resultado && ap.resultado===r.resultado)pts+=pt.x12;
+      }
+    }
+  }
+  
+  const e=b.especiales||{};
+  if(e.campeon && resultadosReales.campeon && e.campeon===resultadosReales.campeon)pts+=15;
+  if(e.goleador && resultadosReales.goleador && e.goleador.toLowerCase().trim()===resultadosReales.goleador.toLowerCase().trim())pts+=10;
+  if(e.mvp && resultadosReales.mvp && e.mvp.toLowerCase().trim()===resultadosReales.mvp.toLowerCase().trim())pts+=10;
+  return pts;
+}
+
 function mostrarPuntaje(){if(jugadorActual){document.getElementById('puntosVivo').innerText=calcularPuntos(jugadorActual);document.getElementById('puntajeVivo').style.display='block';}}
 function renderRanking(){const ranking=jugadores.map(j=>({n:j.nombre,p:calcularPuntos(j.id)})).sort((a,b)=>b.p-a.p);document.getElementById('rankingTabla').innerHTML='<table class="ranking-table"><thead><tr><th>#</th><th>Jugador</th><th>Puntos</th></tr></thead><tbody>'+ranking.map((j,i)=>`<tr><td>${i+1}º ${i===0?'🥇':i===1?'🥈':i===2?'🥉':''}</td><td>${j.n}</td><td><span class="pts-badge">${j.p} pts</span></td></tr>`).join('')+'</tbody></table>';}
 
@@ -606,13 +664,13 @@ function propagarResultadosReales(fase, pid) {
           if(p.p){
             const perdedor1 = getPerdedor(p.r[0].f, p.r[0].id, bets);
             const perdedor2 = getPerdedor(p.r[1].f, p.r[1].id, bets);
-            if(perdedor1){ bets[fd][p.id].local = perdedor1; cambios = true; }
-            if(perdedor2){ bets[fd][p.id].visitante = perdedor2; cambios = true; }
+            if(bets[fd][p.id].local !== perdedor1) { bets[fd][p.id].local = perdedor1 || ""; cambios = true; }
+            if(bets[fd][p.id].visitante !== perdedor2) { bets[fd][p.id].visitante = perdedor2 || ""; cambios = true; }
           } else {
             const e1 = getGanador(p.r[0].f, p.r[0].id, bets);
             const e2 = getGanador(p.r[1].f, p.r[1].id, bets);
-            if (e1) { bets[fd][p.id].local = e1; cambios = true; }
-            if (e2) { bets[fd][p.id].visitante = e2; cambios = true; }
+            if(bets[fd][p.id].local !== e1) { bets[fd][p.id].local = e1 || ""; cambios = true; }
+            if(bets[fd][p.id].visitante !== e2) { bets[fd][p.id].visitante = e2 || ""; cambios = true; }
           }
         }
       }
@@ -762,7 +820,7 @@ document.querySelectorAll('.tab').forEach(tab=>{tab.onclick=function(){const p=t
 
 renderizarTodo();
 if(!jugadorActual&&jugadores.length>0){jugadorActual=jugadores[0].id;renderizarTodo();}
-console.log('✅ Quiniela v38.2 - Campeón real automatizado desde la Final');
+console.log('✅ Quiniela v38.4 - Recálculo de puntos e historial fantasma completamente saneados');
 
 </script>
 </body>
